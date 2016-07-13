@@ -11,4 +11,18 @@
 ;;ВременнАя метка при закрытии задания
 (setq org-log-done t)
 
+(setq org-log-into-drawer "LOGBOOK")
+(setq org-clock-into-drawer 1)
+
+;; C-c c is for capture
+(define-key global-map "\C-cc" 'org-capture)
+;; force UTF-8
+(setq org-export-coding-system 'utf-8)
+
+(setq org-capture-templates
+      '(;;other entries
+	("j" "Journal" entry (file+datetree "~/org/journal.org")
+	 "**** %U %^{Title} %^g\n%?")
+	;;other entries
+	))
 
