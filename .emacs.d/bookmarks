@@ -1,0 +1,15 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("emacs.md"
+ (filename . "d:/users/bercut/Dropbox/Public/_notes/hugo-myblog/content/post/emacs.md")
+ (front-context-string . "   * M-Ret созда")
+ (rear-context-string . "овень заголовка\n")
+ (position . 634))
+("TODO.org"
+ (filename . "d:/users/bercut/Dropbox/Public/_notes/_org/TODO.org")
+ (front-context-string)
+ (rear-context-string . "ор по таск бару\n")
+ (position . 1668))
+)

@@ -1,0 +1,44 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("d:/users/bercut/home/" . ".emacs.d/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "d:/users/bercut/home/"
+ "d:/users/bercut/bin/emacs-24.4/bin/"
+ "d:/users/bercut/home/.emacs.d/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ ".emacs"
+ "addpm.exe"
+ "bookmarks"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("d:/users/bercut/home/" (22405 6352 0 0) ".python_history" ".matplotlib/" ".ipython/" ".history" ".emacs.d/" ".emacs" ".bash_history" "../" "./")
+
+ ("d:/users/bercut/Dropbox/Public/cordic/" (22405 11771 0 0) "step_control.v" "sinus10kHz.v" "reset_block.v" "cordic.v" "cordic.py" "../" "./")
+
+ ("d:/users/bercut/home/.emacs.d/" (22402 33456 0 0) "yasnippet/" "var/" "snippets/" "recentf" "python-mode/" "plugins/" "ido.last" "ergoemacs-mode/" "elpa/" "bookmarks" "auto-save-list/" "../" "./")
+
+ ("d:/users/bercut/Dropbox/Public/_notes/_org/text/" (22402 31090 0 0) "verilog/" "python/" "i3_de.org" "emacs/" "bookmarks.org" "../" "./")
+
+ ("d:/users/bercut/Dropbox/Public/_статьи/Синхронизация инжекции/" (22397 9728 0 0) "sources/" "PhaseReferenceDistribution.pdf" "MO4065.PDF" "article.org" "article.bak.org" "article/" "123/" "../" "./")
+
+ ("d:/users/bercut/Dropbox/Public/_notes/_org/" (22391 52582 0 0) "verilog/" "summer2016/" "python/" "output.org" "Notes.org" "my_link.org" "emacs_config.zip" "emacs/" "bookmarks.org" "BINP_TODO.org" "BINP.16.org" ".#bookmarks.org" "../" "./")
+
+ ("d:/users/bercut/home/.emacs.d/auto-complete_src/" (22378 44152 0 0) "TODO.md" "tests/" "README.md" "Makefile" "etc/" "doc/" "dict/" "COPYING.GPLv3" "COPYING.FDL" "Cask" "auto-complete.el" "auto-complete-pkg.el" "auto-complete-config.el" ".travis.yml" ".gitignore" "../" "./")
+
+ ("d:/users/bercut/Dropbox/Public/_notes/_org/emacs/" (22378 48134 0 0) "org_full.pdf" "emacs.org" ".emacs.d/" ".emacs" ".#emacs.org" "#emacs.org#" "../" "./")
+
+ ("d:/users/bercut/bin/emacs-24.4/bin/" (21811 43098 0 0) "runemacs.exe" "libXpm.dll" "grep-changelog" "etags.exe" "emacsclientw.exe" "emacsclient.exe" "emacs.exe" "emacs-24.4.exe" "ebrowse.exe" "ctags.exe" "addpm.exe" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
