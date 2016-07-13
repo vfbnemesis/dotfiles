@@ -1,8 +1,9 @@
 ﻿;;---оригинал https://gist.github.com/dbushenko/6045709------------------------
 
-;;убираем меню и тулбар
+;;убираем меню и тулбар и прокрутку
 ;;(menu-bar-mode -1)
 (tool-bar-mode -1)
+;;(scroll-bar-mode -1)
 
 ;;отключаем различные варианты автосохранений
 (setq make-backup-files         nil) ; Don't want any backup files
