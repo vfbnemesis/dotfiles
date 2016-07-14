@@ -1,5 +1,15 @@
 ﻿;;---org-mode config-----------------------------------------------------------
 
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+
+(setq org-use-fast-todo-selection t)
+
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+(setq org-agenda-files (quote ("~/org/gtd"
+                               "~/org/journal.org")))
+
 ;;для выполнения питоновых команд из org-mode
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -25,4 +35,6 @@
 	 "**** %U %^{Title} %^g\n%?")
 	;;other entries
 	))
+
+
 
