@@ -10,6 +10,14 @@
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving
 
+;; package manager
+(load "package")
+(require 'package)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
+
 (add-to-list 'load-path "~/.emacs.d/plugins")
 
 ;; номера строк (слева)
@@ -55,14 +63,6 @@
 (yas/load-directory "~/.emacs.d/yasnippet/snippets")
 
 ;;-----------------------------------------------------------------------------
-
-;; package manager
-(load "package")
-(require 'package)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-
 
 ;; markdown mode
 (autoload 'markdown-mode "markdown-mode"
