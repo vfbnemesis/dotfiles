@@ -18,6 +18,12 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
+;; use-package
+(add-to-list 'load-path "~/.emacs.d/plugins/use-package")
+(require 'use-package)
+
+;;---load plugins--------------------------------------------------------------
+
 (add-to-list 'load-path "~/.emacs.d/plugins")
 
 ;; номера строк (слева)
@@ -56,11 +62,14 @@
  '(speedbar-show-unknown-files t) ;; отображение всех файлов
 )
 
-;; http://www.emacswiki.org/emacs/Yasnippet
-(add-to-list 'load-path "~/.emacs.d/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
-(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+  ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+
+;; cua-mode
+(cua-mode t)
 
 ;;-----------------------------------------------------------------------------
 
@@ -70,8 +79,5 @@
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
-;; cua-mode
-(cua-mode t)
 
 
