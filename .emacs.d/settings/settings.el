@@ -71,8 +71,7 @@
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
-;; ergo-emacs
-;;(add-to-list 'load-path "~/.emacs.d/ergoemacs-mode")
-;;(require 'ergoemacs-mode)
+;; cua-mode
+(cua-mode t)
 
 

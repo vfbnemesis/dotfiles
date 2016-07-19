@@ -69,26 +69,6 @@
 (global-unset-key (kbd "M-m"))
 (global-set-key (kbd "M-m") 'reindent-then-newline-and-indent)
 
-;; Выделение
-(global-unset-key (kbd "M-SPC"))
-(global-set-key (kbd "M-SPC") 'set-mark-command)
-
-;; Копирование
-(global-unset-key (kbd "M-c"))
-(global-set-key (kbd "M-c") 'kill-ring-save)
-
-;; Вырезание
-(global-unset-key (kbd "M-x"))
-(global-set-key (kbd "M-x") 'kill-region)
-
-;; Вставка
-(global-unset-key (kbd "M-v"))
-(global-set-key (kbd "M-v") 'yank)
-
-;; Отмена
-(global-unset-key (kbd "M-z"))
-(global-set-key (kbd "M-z") 'undo)
-
 ;; Сохранение
 (global-unset-key (kbd "M-s"))
 (global-set-key (kbd "M-s") 'save-buffer)
