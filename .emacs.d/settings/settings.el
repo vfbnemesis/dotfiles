@@ -46,13 +46,6 @@
 
 (global-set-key (kbd "<f2>") 'bs-show)
 
-;; http://www.emacswiki.org/emacs/AutoComplete
-;;(add-to-list 'load-path "~/.emacs.d/auto-complete")
-;;(require 'auto-complete)
-;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
-;;(require 'auto-complete-config)
-;;(ac-config-default)
-
 ;; браузер по файловой системе
 ;; http://www.emacswiki.org/emacs/SrSpeedbar
 (require 'sr-speedbar)
@@ -65,9 +58,18 @@
 (use-package yasnippet
   :ensure t
   :config
-  (yas-global-mode 1))
   ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+  (yas-global-mode 1))  
 
+
+(use-package auto-complete
+  :ensure t
+  :config
+  ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
+  (ac-config-default))
+
+
+  
 ;; cua-mode
 (cua-mode t)
 
