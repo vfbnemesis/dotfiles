@@ -15,6 +15,9 @@
 ;; cua-mode
 (cua-mode t)
 
+;; перемещение между окнами
+;;(windmove-default-keybindings)
+
 ;;-package manager-------------------------------------------------------------
 
 (require 'package)
@@ -42,8 +45,10 @@
 ;; помогает выбирать
 ;; built-in
 (require 'ido)
-(ido-mode t)
 (setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode t)
+
 
 ;; buffer show файлы + scratch
 ;; built-in
@@ -78,6 +83,12 @@
   :config
   ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
   (ac-config-default))
+
+
+(use-package expand-region
+  :ensure t
+  :config
+  (global-set-key (kbd "C-=") 'er/expand-region) )
 
 
 ;;-----------------------------------------------------------------------------
