@@ -5,22 +5,29 @@
 (tool-bar-mode -1)
 ;;(scroll-bar-mode -1)
 
+;; (setq inhibit-startup-message t)
+
 ;;отключаем различные варианты автосохранений
 (setq make-backup-files         nil) ; Don't want any backup files
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving
 
-;; package manager
-(load "package")
+;; cua-mode
+(cua-mode t)
+
+;;-package manager-------------------------------------------------------------
+
 (require 'package)
+(setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
-;; use-package
-(add-to-list 'load-path "~/.emacs.d/plugins/use-package")
-(require 'use-package)
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+	(package-refresh-contents)
+	(package-install 'use-package))
 
 ;;---load plugins--------------------------------------------------------------
 
@@ -46,6 +53,7 @@
 
 (global-set-key (kbd "<f2>") 'bs-show)
 
+;;---use-packages--------------------------------------------------------------
 
 ;; браузер по файловой системе
 (use-package sr-speedbar
@@ -71,9 +79,6 @@
   ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
   (ac-config-default))
 
-  
-;; cua-mode
-(cua-mode t)
 
 ;;-----------------------------------------------------------------------------
 
