@@ -46,14 +46,17 @@
 
 (global-set-key (kbd "<f2>") 'bs-show)
 
-;; браузер по файловой системе
-;; http://www.emacswiki.org/emacs/SrSpeedbar
-(require 'sr-speedbar)
-(global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
 
-(custom-set-variables
- '(speedbar-show-unknown-files t) ;; отображение всех файлов
-)
+;; браузер по файловой системе
+(use-package sr-speedbar
+  :ensure t
+  :config
+  (progn
+    (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
+    (custom-set-variables
+     '(speedbar-show-unknown-files t)) ;; отображение всех файлов
+    ))
+
 
 (use-package yasnippet
   :ensure t
@@ -68,7 +71,6 @@
   ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
   (ac-config-default))
 
-
   
 ;; cua-mode
 (cua-mode t)
@@ -76,10 +78,10 @@
 ;;-----------------------------------------------------------------------------
 
 ;; markdown mode
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+;;(autoload 'markdown-mode "markdown-mode"
+;;   "Major mode for editing Markdown files" t)
+;;(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+;;(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+;;(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 
