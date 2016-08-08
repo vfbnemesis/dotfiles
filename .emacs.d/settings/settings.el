@@ -58,6 +58,14 @@
 
 (global-set-key (kbd "<f2>") 'bs-show)
 
+
+;; recent files
+;; 
+(require 'recentf)
+(setq recent-max-saved-items 200
+      recent-max-menu-items 15)
+(recentf-mode)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
 ;;---use-packages--------------------------------------------------------------
 
 ;; браузер по файловой системе

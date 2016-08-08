@@ -1,7 +1,14 @@
 ﻿;;---org-mode config-----------------------------------------------------------
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+      '((sequence "TODO(t)" ;; задача/проект требует выполнения
+		  "NEXT(n)" ;; следующее действие (можно брать и делать)
+		  "IN-PROGRESS(p)" ;; проект в работе и требует активного внимания
+		  "WAITING(w)" ;; проект в работе, но в данный момент отложен
+		  "|" "DONE(d)")
+	(sequence "SOMETIMES(s)" ;; сделать может быть когда-нибудь 
+		  "|" "CANCELLED(c)")
+	(sequence "LEARN" "TRY" "|" "COMPLETE(x)"))) 
 
 (setq org-use-fast-todo-selection t)
 
