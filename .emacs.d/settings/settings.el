@@ -60,7 +60,7 @@
 
 
 ;; recent files
-;; 
+;; build-in
 (require 'recentf)
 (setq recent-max-saved-items 200
       recent-max-menu-items 15)
@@ -96,9 +96,26 @@
 (use-package expand-region
   :ensure t
   :config
-  (global-set-key (kbd "C-=") 'er/expand-region) )
+  (global-set-key (kbd "C-=") 'er/expand-region))
 
 
+(use-package ido-vertical-mode
+  :ensure t
+  :config
+  (progn
+    (ido-vertical-mode 1)
+    (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+    ))
+
+(use-package smex
+  :ensure t
+  :config
+  (progn
+    (smex-initialize)
+    (global-set-key (kbd "M-x") 'smex)
+    ;;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+    ))
+  
 ;;-----------------------------------------------------------------------------
 
 ;; markdown mode
