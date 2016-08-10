@@ -1,16 +1,43 @@
 ﻿;;---оригинал https://gist.github.com/dbushenko/6045709------------------------
+;;---оригинал https://habrahabr.ru/post/248663/--------------------------------
 
+(setq user-full-name   "vfbnemesis")
+(setq user-mail-adress "vfbnemesis_mail")
+
+;; Disable GUI components
 ;;убираем меню и тулбар и прокрутку
 ;;(menu-bar-mode -1)
 (tool-bar-mode -1)
 ;;(scroll-bar-mode -1)
+(setq redisplay-dont-pause t)  ;; лучшая отрисовка буфера
 
-;; (setq inhibit-startup-message t)
+;; Inhibit startup/splash screen
+;;(setq inhibit-splash-screen   t)
+;; экран приветствия можно вызвать комбинацией C-h C-a
+;;(setq ingibit-startup-message t)
 
-;;отключаем различные варианты автосохранений
+;; включить выделение выражений между {},[],()
+(show-paren-mode t)
+;; выделить цветом выражения между {},[],()
+(setq show-paren-style 'expression) 
+
+;; Delete selection
+(delete-selection-mode t)
+
+;; отключаем различные варианты автосохранений
 (setq make-backup-files         nil) ; Don't want any backup files
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving
+
+;; 24-часовой временной формат в mode-line
+(setq display-time-24hr-format t) 
+;; показывать часы в mode-line
+(display-time-mode             t) 
+
+;; показать номер строки в mode-line
+(line-number-mode t)
+;; показать номер столбца в mode-line
+(column-number-mode t) 
 
 ;; cua-mode
 (cua-mode t)
@@ -83,8 +110,11 @@
 (use-package auto-complete
   :ensure t
   :config
+  (progn
   ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
-  (ac-config-default))
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
 
 
 (use-package expand-region
