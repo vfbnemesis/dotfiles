@@ -42,13 +42,6 @@
 (setq linum-format "%d ")
 (global-linum-mode 1)
 
-;; помогает выбирать
-;; built-in
-(require 'ido)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode t)
-
 
 ;; buffer show файлы + scratch
 ;; built-in
@@ -69,8 +62,8 @@
 
 ;;---use-packages--------------------------------------------------------------
 
-;; браузер по файловой системе
 (use-package sr-speedbar
+  ;; браузер по файловой системе
   :ensure t
   :config
   (progn
@@ -98,6 +91,22 @@
   :ensure t
   :config
   (global-set-key (kbd "C-=") 'er/expand-region))
+
+
+(use-package flx-ido
+  ;; ido (built-in) помогает выбирать
+  ;; flx-ido
+  ;; помогает выбирать
+  :ensure t
+  :config
+  (progn
+    (ido-mode 1)
+    (ido-everywhere 1)
+    (flx-ido-mode 1)
+    ;; disable ido faces to see flx highlights.
+    (setq ido-enable-flex-matching t)
+    ;; (setq ido-use-faces nil)
+    ))
 
 
 (use-package ido-vertical-mode
