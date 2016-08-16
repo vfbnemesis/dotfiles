@@ -1,5 +1,6 @@
 ﻿;;---оригинал https://gist.github.com/dbushenko/6045709------------------------
 ;;---оригинал https://habrahabr.ru/post/248663/--------------------------------
+;;---оригинал https://habrahabr.ru/post/39564/---------------------------------
 
 (setq user-full-name   "vfbnemesis")
 (setq user-mail-adress "vfbnemesis_mail")
@@ -19,7 +20,10 @@
 ;; включить выделение выражений между {},[],()
 (show-paren-mode t)
 ;; выделить цветом выражения между {},[],()
-(setq show-paren-style 'expression) 
+(setq show-paren-style 'expression)
+
+;; подсветка текущей строки
+(global-hl-line-mode t)
 
 ;; Delete selection
 (delete-selection-mode t)
@@ -30,7 +34,7 @@
 (setq auto-save-default         nil) ; Don't want any auto saving
 
 ;; 24-часовой временной формат в mode-line
-(setq display-time-24hr-format t) 
+(setq display-time-24hr-format t)
 ;; показывать часы в mode-line
 (display-time-mode             t) 
 
@@ -44,6 +48,10 @@
 
 ;; перемещение между окнами
 ;;(windmove-default-keybindings)
+
+
+;; сохранять сессию перед выходом
+;;  desktop-save-mode t)
 
 ;;-package manager-------------------------------------------------------------
 
@@ -97,6 +105,7 @@
     (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
     (custom-set-variables
      '(speedbar-show-unknown-files t)) ;; отображение всех файлов
+    (setq speedbar-use-images nil)
     ))
 
 
