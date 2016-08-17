@@ -77,3 +77,8 @@
 (global-unset-key (kbd "C-o"))
 (global-set-key (kbd "C-o") 'find-file)
 
+
+;; define key sequence
+;;
+(global-set-key (kbd "<f6>") 'visual-line-mode)
+(global-set-key (kbd "<f8>") 'whitespace-mode)
