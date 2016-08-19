@@ -49,11 +49,33 @@
 ;; перемещение между окнами
 ;;(windmove-default-keybindings)
 
-
 ;; сохранять сессию перед выходом
 ;;  desktop-save-mode t)
 
-;;-package manager-------------------------------------------------------------
+;; auto-fill-mode
+;; 
+(setq-default fill-column 80)
+
+(defun auto-fill-mode-on()
+  (interactive)
+  (auto-fill-mode 1))
+
+(defun comment-auto-fill-only-mode-on()
+  (interactive)
+  (setq-local comment-auto-fill-only-comments t)
+  (auto-fill-mode 1))
+
+(global-set-key (kbd "C-c q") 'auto-fill-mode-on)
+
+;; auto-fill mode for comment only
+(add-hook 'emacs-lisp-mode-hook 'comment-auto-fill-only-mode-on)
+
+;; auto-fill mode for text
+(add-hook 'text-mode-hook 'auto-fill-mode-on)
+(add-hook 'tex-mode-hook 'auto-fill-mode-on)
+(add-hook 'latex-mode-hook 'auto-fill-mode-on)
+
+;;manager-------------------------------------------------------------o
 
 (require 'package)
 (setq package-enable-at-startup nil)

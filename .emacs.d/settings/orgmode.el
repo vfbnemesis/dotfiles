@@ -1,5 +1,22 @@
 ﻿;;---org-mode config-----------------------------------------------------------
 
+;; default directory
+(setq org-directory "~/org")
+
+;; скрыть все звездочик в заголовках кроме последней
+(setq org-hide-leading-stars t)
+
+;; effect of TAB in a code block is as in the language major mode buffer
+(setq org-src-tab-acts-natively t)
+
+;; to hide the *,=, or / markers
+(setq org-hide-emphasis-markers t) 
+
+;; Additional shortcuts for navigating through org-mode documents
+;; (global-set-key (kbd "C-c <up>") 'outline-up-heading)
+;; (global-set-key (kbd "C-c <left>") 'outline-previous-visible-heading)
+;; (global-set-key (kbd "C-c <right>") 'outline-next-visible-heading)
+
 (setq org-todo-keywords
       '((sequence "TODO(t)" ;; задача/проект требует выполнения
 		  "NEXT(n)" ;; следующее действие (можно брать и делать)
