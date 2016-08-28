@@ -38,6 +38,9 @@
 ;; показывать часы в mode-line
 (display-time-mode             t) 
 
+;; Do NOT show average system load time
+(setq display-time-default-load-average nil)
+
 ;; показать номер строки в mode-line
 (line-number-mode t)
 ;; показать номер столбца в mode-line
@@ -118,6 +121,11 @@
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 
 ;;---use-packages--------------------------------------------------------------
+;; :init - execute code before a package is loaded
+;; :config - execute code after a package is loaded
+;; :defer - (отложенная загрузка)
+;; :ensure - causes the package(s) to be installed automatically
+;; if not already present on your system
 
 (use-package sr-speedbar
   ;; браузер по файловой системе
@@ -154,29 +162,53 @@
   (global-set-key (kbd "C-=") 'er/expand-region))
 
 
-(use-package flx-ido
+(use-package ido
   ;; ido (built-in) помогает выбирать
-  ;; flx-ido
   ;; помогает выбирать
-  :ensure t
+  :defer t
+  :init
+  (progn
+    (setq ido-enable-flex-matching  t) ; enable fuzzy search
+    (setq ido-everywhere            t)
+    (setq ido-create-new-buffer 'always) ; create a new buffer if no buffer matches substring
+
+    ;; customize the order in which files are sorted when Ido displays them in
+    ;; the minibuffer. There are certain file extensions I use more than others,
+    ;; so I tell Ido to emphasize those
+    (setq ido-file-extensions-order '(".sv" ".v" ".svh" ".tv" ".m" ".c" ".cpp" ".el"))
+
+    (setq ido-use-filename-at-point 'guess) ; find file at point using ido
+
+    ;; look into other directories if the entered filename doesn't exist
+    ;; in current directory ido-auto-merge-work-directories-length -1
+    ;; do NOT look into other directories if the entered filename doesn't
+    ;; exist in current directory
+    (setq ido-auto-merge-work-directories-length 0))
   :config
   (progn
     (ido-mode 1)
-    (ido-everywhere 1)
-    (flx-ido-mode 1)
-    ;; disable ido faces to see flx highlights.
-    (setq ido-enable-flex-matching t)
-    ;; (setq ido-use-faces nil)
+
+    (use-package flx-ido
+      ;; flx-ido for better flex matching between words
+      :ensure t
+      :config
+      (progn
+	;; disable ido faces to see flx highlights.
+	;; (setq ido-use-faces nil)
+	(flx-ido-mode 1)
+	))
+
+    (use-package ido-vertical-mode
+      ;; flx-ido looks better with ido-vertical-mode
+      :ensure t
+      :config
+      (progn
+	(setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)	
+	(ido-vertical-mode 1)
+	))
+    
     ))
 
-
-(use-package ido-vertical-mode
-  :ensure t
-  :config
-  (progn
-    (ido-vertical-mode 1)
-    (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-    ))
 
 (use-package smex
   :ensure t
@@ -187,7 +219,30 @@
     ;;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
     (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
     ))
-  
+
+
+(use-package verilog-mode
+  :config
+  (progn
+    (setq verilog-align-ifelse t)
+    (setq verilog-auto-delete-trailing-whitespace t)
+    (setq verilog-auto-inst-param-value t)
+    (setq verilog-auto-inst-vector nil)
+    (setq verilog-auto-lineup (quote all))
+    (setq verilog-auto-newline nil)
+    (setq verilog-auto-save-policy nil)
+    (setq verilog-auto-template-warn-unused t)
+    (setq verilog-case-indent 2)
+    (setq verilog-cexp-indent 2)
+    (setq verilog-highlight-grouping-keywords t)
+    (setq verilog-highlight-modules t)
+    (setq verilog-indent-level 2)
+    (setq verilog-indent-level-behavioral 2)
+    (setq verilog-indent-level-declaration 2)
+    (setq verilog-indent-level-module 2)
+    (setq verilog-tab-to-comment t)
+    ))
+
 ;;-----------------------------------------------------------------------------
 
 ;; markdown mode
