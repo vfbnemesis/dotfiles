@@ -17,6 +17,12 @@
 ;; (global-set-key (kbd "C-c <left>") 'outline-previous-visible-heading)
 ;; (global-set-key (kbd "C-c <right>") 'outline-next-visible-heading)
 
+;; Set up a keyboard shortcut to go to GTD org file
+(global-set-key (kbd "C-c w") 
+                (lambda () (interactive) (find-file "~/org/gtd/binp.org")))
+(global-set-key (kbd "C-c p") 
+                (lambda () (interactive) (find-file "~/org/gtd/personal.org")))
+
 (setq org-todo-keywords
       '((sequence "TODO(t)" ;; задача/проект требует выполнения
 		  "NEXT(n)" ;; следующее действие (можно брать и делать)
@@ -49,7 +55,7 @@
 (setq org-clock-into-drawer 1)
 
 ;; C-c c is for capture
-(define-key global-map "\C-cc" 'org-capture)
+(define-key global-map "\C-c c" 'org-capture)
 ;; force UTF-8
 (setq org-export-coding-system 'utf-8)
 

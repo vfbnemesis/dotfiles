@@ -1,6 +1,6 @@
-﻿;;---оригинал https://gist.github.com/dbushenko/6045709------------------------
-;;---оригинал https://habrahabr.ru/post/248663/--------------------------------
-;;---оригинал https://habrahabr.ru/post/39564/---------------------------------
+﻿;; --- оригинал https://gist.github.com/dbushenko/6045709 ---------------------
+;; --- оригинал https://habrahabr.ru/post/248663/ -----------------------------
+;; --- оригинал https://habrahabr.ru/post/39564/ ------------------------------
 
 (setq user-full-name   "vfbnemesis")
 (setq user-mail-adress "vfbnemesis_mail")
@@ -33,18 +33,8 @@
 (setq auto-save-list-file-name  nil) ; Don't want any .saves files
 (setq auto-save-default         nil) ; Don't want any auto saving
 
-;; 24-часовой временной формат в mode-line
-(setq display-time-24hr-format t)
-;; показывать часы в mode-line
-(display-time-mode             t) 
-
 ;; Do NOT show average system load time
 (setq display-time-default-load-average nil)
-
-;; показать номер строки в mode-line
-(line-number-mode t)
-;; показать номер столбца в mode-line
-(column-number-mode t) 
 
 ;; cua-mode
 (cua-mode t)
@@ -55,8 +45,13 @@
 ;; сохранять сессию перед выходом
 ;;  desktop-save-mode t)
 
-;; auto-fill-mode
-;; 
+;; --- Mode line configuration ------------------------------------------------
+(line-number-mode t) ; показать номер строки в mode-line
+(column-number-mode t) ; показать номер столбца в mode-line
+(setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
+(display-time-mode t) ; показывать часы в mode-line
+
+;; --- auto-fill-mode ---------------------------------------------------------
 (setq-default fill-column 80)
 
 (defun auto-fill-mode-on()
@@ -78,7 +73,42 @@
 (add-hook 'tex-mode-hook 'auto-fill-mode-on)
 (add-hook 'latex-mode-hook 'auto-fill-mode-on)
 
-;;manager-------------------------------------------------------------o
+;; --- calendar mode localization ---------------------------------------------
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
+      calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель"
+				 "Май" "Июнь" "Июль" "Август"
+				 "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
+
+;; --- move lines -------------------------------------------------------------
+
+(defun move-line (n)
+  "Move the current line up or down by N lines."
+  (interactive "p")
+  (setq col (current-column))
+  (beginning-of-line) (setq start (point))
+  (end-of-line) (forward-char) (setq end (point))
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (insert line-text)
+    ;; restore point to original column in moved line
+    (forward-line -1)
+    (forward-char col)))
+
+(defun move-line-up (n)
+  "Move the current line up by N lines."
+  (interactive "p")
+  (move-line (if (null n) -1 (- n))))
+
+(defun move-line-down (n)
+  "Move the current line down by N lines."
+  (interactive "p")
+  (move-line (if (null n) 1 n)))
+
+;; (global-set-key (kbd "M-<up>") 'move-line-up)
+;; (global-set-key (kbd "M-<down>") 'move-line-down)
+
+;; --- package manager --------------------------------------------------------
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -92,7 +122,7 @@
 	(package-refresh-contents)
 	(package-install 'use-package))
 
-;;---load plugins--------------------------------------------------------------
+;; --- load plugins -----------------------------------------------------------
 
 (add-to-list 'load-path "~/.emacs.d/plugins")
 
@@ -120,7 +150,7 @@
 (recentf-mode)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 
-;;---use-packages--------------------------------------------------------------
+;; --- use-packages -----------------------------------------------------------
 ;; :init - execute code before a package is loaded
 ;; :config - execute code after a package is loaded
 ;; :defer - (отложенная загрузка)
@@ -171,7 +201,8 @@
     (setq ido-enable-flex-matching  t) ; enable fuzzy search
     (setq ido-everywhere            t)
     (setq ido-create-new-buffer 'always) ; create a new buffer if no buffer matches substring
-
+    (setq org-completion-use-ido t) ; use ido with org-mode
+    
     ;; customize the order in which files are sorted when Ido displays them in
     ;; the minibuffer. There are certain file extensions I use more than others,
     ;; so I tell Ido to emphasize those
@@ -243,7 +274,7 @@
     (setq verilog-tab-to-comment t)
     ))
 
-;;-----------------------------------------------------------------------------
+;; ----------------------------------------------------------------------------
 
 ;; markdown mode
 ;;(autoload 'markdown-mode "markdown-mode"
