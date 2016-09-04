@@ -84,3 +84,7 @@
 
 (global-set-key (kbd "<f6>") 'visual-line-mode)
 (global-set-key (kbd "<f8>") 'whitespace-mode)
+
+;; other
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
