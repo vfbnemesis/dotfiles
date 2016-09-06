@@ -29,5 +29,4 @@
 ;;    ...  )
 
 (load-file "~/.emacs.d/settings/settings.el")
-(load-file "~/.emacs.d/settings/keybinding.el")
 (load-file "~/.emacs.d/settings/orgmode.el")
