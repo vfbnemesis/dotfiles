@@ -17,20 +17,27 @@
 ;; (global-set-key (kbd "C-c <left>") 'outline-previous-visible-heading)
 ;; (global-set-key (kbd "C-c <right>") 'outline-next-visible-heading)
 
-;; Set up a keyboard shortcut to go to GTD org file
+;; Set up a keyboard shortcut to go to GTD and ORG file
 (global-set-key (kbd "C-c w") 
                 (lambda () (interactive) (find-file "~/org/gtd/binp.org")))
 (global-set-key (kbd "C-c p") 
                 (lambda () (interactive) (find-file "~/org/gtd/personal.org")))
+(global-set-key (kbd "C-c e") 
+                (lambda () (interactive) (find-file "~/org/text/emacs/emacs.org")))
+(global-set-key (kbd "C-c s") 
+                (lambda () (interactive) (find-file "~/.emacs.d/settings/settings.el")))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" ;; задача/проект требует выполнения
 		  "NEXT(n)" ;; следующее действие (можно брать и делать)
 		  "IN-PROGRESS(p)" ;; проект в работе и требует активного внимания
-		  "WAITING(w)" ;; проект в работе, но в данный момент отложен
+		  "WAITING(w)" ;; проект в работе, в данный момент ждем
+		  ;; завершения действия другим человеком
 		  "|" "DONE(d)")
+	
 	(sequence "SOMETIMES(s)" ;; сделать может быть когда-нибудь 
 		  "|" "CANCELLED(c)")
+	
 	(sequence "LEARN" "TRY" "|" "COMPLETE(x)"))) 
 
 (setq org-use-fast-todo-selection t)
@@ -49,7 +56,7 @@
 (setq org-src-fontify-natively 't)
 
 ;;ВременнАя метка при закрытии задания
-(setq org-log-done t)
+(setq org-log-done 'time)
 
 (setq org-log-into-drawer "LOGBOOK")
 (setq org-clock-into-drawer 1)

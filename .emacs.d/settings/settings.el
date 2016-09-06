@@ -108,7 +108,45 @@
 ;; (global-set-key (kbd "M-<up>") 'move-line-up)
 ;; (global-set-key (kbd "M-<down>") 'move-line-down)
 
-;; --- KEYBINDINGS -----------------------------------------------------------
+;; --- Cycling of Color Themes ------------------------------------------------
+
+(setq my-color-themes (list 'deeper-blue
+			    'wheatgrass))
+ 
+(defun my-theme-set-default () ; Set the first row
+      (interactive)
+      (setq theme-current my-color-themes)
+      (load-theme (car theme-current)))
+ 
+(defun my-describe-theme () ; Show the current theme
+  (interactive)
+  (message "%s" (car theme-current)))
+
+; Set the next theme (fixed by Chris Webber - thanks)
+(defun my-theme-cycle ()
+  (interactive)
+  (setq theme-current (cdr theme-current))
+  (if (null theme-current)
+      (setq theme-current my-color-themes))
+  (load-theme (car theme-current))
+  (message "%S" (car theme-current)))
+
+(setq theme-current my-color-themes)
+(my-theme-set-default)
+
+(global-set-key [f7] 'my-theme-cycle)
+
+;; --- hide/show C block ------------------------------------------------------
+
+;; (add-hook 'c-mode-common-hook
+;;   (lambda()
+;;     (local-set-key (kbd "C-c <right>") 'hs-show-block)
+;;     (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+;;     (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+;;     (local-set-key (kbd "C-c <down>")  'hs-show-all)
+;;     (hs-minor-mode t)))
+
+;; --- KEYBINDINGS ------------------------------------------------------------
 ;; оригинал https://gist.github.com/anonymous/2471669b376de09adc44
 ;; http://ergoemacs.org/emacs/emacs_kill-ring.html
 
