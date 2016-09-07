@@ -8,7 +8,7 @@
  '(custom-enabled-themes (quote (deeper-blue)))
  '(org-agenda-files
    (quote
-    ("d:/users/bercut/home/org/gtd/finan.org" "d:/users/bercut/home/org/gtd/binp.org" "d:/users/bercut/home/org/gtd/personal.org" "d:/users/bercut/home/org/gtd/proj.org" "~/org/journal.org")))
+    ("d:/users/bercut/home/org/gtd/finan.org" "d:/users/bercut/home/org/gtd/binp.org" "d:/users/bercut/home/org/gtd/personal.org" "~/org/journal.org")))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -61,8 +61,10 @@
 (setq org-log-into-drawer "LOGBOOK")
 (setq org-clock-into-drawer 1)
 
+(setq org-default-notes-file "~/org/gtd/refile.org")
+
 ;; C-c c is for capture
-(define-key global-map "\C-c c" 'org-capture)
+(define-key global-map (kbd "C-c c") 'org-capture)
 ;; force UTF-8
 (setq org-export-coding-system 'utf-8)
 
@@ -71,6 +73,8 @@
 	("j" "Journal" entry (file+datetree "~/org/journal.org")
 	 "**** %U %^{Title} %^g\n%?")
 	;;other entries
+	("t" "Todo task" entry (file "~/org/gtd/refile.org")
+	 "* TODO %^{Task} %^g\nEntered on: %U\n%?")
 	))
 
 
