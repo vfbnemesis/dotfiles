@@ -109,14 +109,18 @@
 ;; (global-set-key (kbd "M-<down>") 'move-line-down)
 
 ;; --- Cycling of Color Themes ------------------------------------------------
+;; сайт с темами: https://emacsthemes.com/
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/plugins")
 
 (setq my-color-themes (list 'deeper-blue
-			    'wheatgrass))
+			    'wheatgrass
+			    'dark-laptop))
  
 (defun my-theme-set-default () ; Set the first row
       (interactive)
       (setq theme-current my-color-themes)
-      (load-theme (car theme-current)))
+      (load-theme (car theme-current) t))
  
 (defun my-describe-theme () ; Show the current theme
   (interactive)
@@ -128,7 +132,7 @@
   (setq theme-current (cdr theme-current))
   (if (null theme-current)
       (setq theme-current my-color-themes))
-  (load-theme (car theme-current))
+  (load-theme (car theme-current) t)
   (message "%S" (car theme-current)))
 
 (setq theme-current my-color-themes)
