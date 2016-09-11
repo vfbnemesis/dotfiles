@@ -239,6 +239,27 @@
 (global-set-key (kbd "<f8>") 'whitespace-mode)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+;; --- быстрый доступ к файлам (C-x r j)---------------------------------------
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649 
+
+(defvar my/refile-map (make-sparse-keymap))
+
+(defmacro my/defshortcut (key file)
+  `(progn
+     (set-register ,key (cons 'file ,file))
+     (define-key my/refile-map
+       (char-to-string ,key)
+       (lambda (prefix)
+         (interactive "p")
+         (let ((org-refile-targets '(((,file) :maxlevel . 6)))
+               (current-prefix-arg (or current-prefix-arg '(4))))
+           (call-interactively 'org-refile))))))
+
+(my/defshortcut ?b "~/org/gtd/binp.org")
+(my/defshortcut ?p "~/org/gtd/personal.org")
+(my/defshortcut ?e "~/org/text/emacs/emacs.org")
+(my/defshortcut ?s "~/.emacs.d/settings/settings.el")
+
 ;; --- package manager --------------------------------------------------------
 
 (require 'package)
@@ -380,6 +401,54 @@
     (global-set-key (kbd "M-x") 'smex)
     ;;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
     (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+    ))
+
+
+(use-package hydra
+  :ensure t
+  :config
+  (progn
+    (defhydra my/window-movement (:hint nil)
+"
+^Winmovie^          ^ace-window^                ^text size^ 
+---------------------------------------------------------------------------
+left                _a_: ace-window             _g_: in
+right               _s_: swap ace-window        _l_: out
+up                  _d_: delete ace window
+down                _i_: ace maximize
+"
+      ("<left>" windmove-left)
+      ("<right>" windmove-right)
+      ("<down>" windmove-down)
+      ("<up>" windmove-up)
+      ("a" ace-window)
+      ("s" ace-swap-window)
+      ("d" ace-delete-window)
+      ("i" ace-maximize-window)
+      ("g" text-scale-increase)
+      ("l" text-scale-decrease)
+      ("q" nil "quit" :color blue))
+
+    (global-set-key (kbd "<f5>") 'my/window-movement/body )
+    ))
+
+
+(use-package ace-window
+  :ensure t
+  :config
+  (progn
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (setq aw-dispatch-always t)
+
+    (defvar aw-dispatch-alist
+      '((?x aw-delete-window " Ace - Delete Window")
+	(?m aw-swap-window " Ace - Swap Window")
+	(?n aw-flip-window)
+	(?v aw-split-window-vert " Ace - Split Vert Window")
+	(?b aw-split-window-horz " Ace - Split Horz Window")
+	(?i delete-other-windows " Ace - Maximize Window")
+	(?o delete-other-windows))
+      "List of actions for `aw-dispatch-default'.")
     ))
 
 

@@ -18,14 +18,14 @@
 ;; (global-set-key (kbd "C-c <right>") 'outline-next-visible-heading)
 
 ;; Set up a keyboard shortcut to go to GTD and ORG file
-(global-set-key (kbd "C-c w") 
-                (lambda () (interactive) (find-file "~/org/gtd/binp.org")))
-(global-set-key (kbd "C-c p") 
-                (lambda () (interactive) (find-file "~/org/gtd/personal.org")))
-(global-set-key (kbd "C-c e") 
-                (lambda () (interactive) (find-file "~/org/text/emacs/emacs.org")))
-(global-set-key (kbd "C-c s") 
-                (lambda () (interactive) (find-file "~/.emacs.d/settings/settings.el")))
+;; (global-set-key (kbd "C-c w") 
+;;                 (lambda () (interactive) (find-file "~/org/gtd/binp.org")))
+;; (global-set-key (kbd "C-c p") 
+;;                 (lambda () (interactive) (find-file "~/org/gtd/personal.org")))
+;; (global-set-key (kbd "C-c e") 
+;;                 (lambda () (interactive) (find-file "~/org/text/emacs/emacs.org")))
+;; (global-set-key (kbd "C-c s") 
+;;                 (lambda () (interactive) (find-file "~/.emacs.d/settings/settings.el")))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" ;; задача/проект требует выполнения
