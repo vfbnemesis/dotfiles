@@ -472,6 +472,8 @@ down                _i_: ace maximize
     (setq verilog-indent-level-declaration 2)
     (setq verilog-indent-level-module 2)
     (setq verilog-tab-to-comment t)
+
+    (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
 
 ;; ----------------------------------------------------------------------------
