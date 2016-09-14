@@ -45,6 +45,19 @@
 ;; сохранять сессию перед выходом
 ;;  desktop-save-mode t)
 
+(defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
+
+;; --- scrolling --------------------------------------------------------------
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed 'nil)
+(setq mouse-wheel-follow-mouse 't)
+;;(setq scroll-preserve-screen-position 1) ; keep cursor at same position when scrolling
+(setq scroll-step 1)
+;; (setq scroll-conservatively 10000) чего делает эта переменная ?
+
+(global-set-key (kbd "M-<up>") (lambda () (interactive) (scroll-down 1)))
+(global-set-key (kbd "M-<down>") (lambda () (interactive) (scroll-up 1)))
+
 ;; --- Mode line configuration ------------------------------------------------
 (line-number-mode t) ; показать номер строки в mode-line
 (column-number-mode t) ; показать номер столбца в mode-line
@@ -141,14 +154,22 @@
 (global-set-key [f7] 'my-theme-cycle)
 
 ;; --- hide/show C block ------------------------------------------------------
+(defvar hs-special-modes-alist
+  (mapcar 'purecopy
+	  '((c-mode "{" "}" "/[*/]" nil nil)
+	    (c++-mode "{" "}" "/[*/]" nil nil)
+	    (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+	    (java-mode "{" "}" "/[*/]" nil nil)
+	    (js-mode "{" "}" "/[*/]" nil)
+	    (emacs-lisp- "(" ")" nil))))
 
-;; (add-hook 'c-mode-common-hook
-;;   (lambda()
-;;     (local-set-key (kbd "C-c <right>") 'hs-show-block)
-;;     (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-;;     (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-;;     (local-set-key (kbd "C-c <down>")  'hs-show-all)
-;;     (hs-minor-mode t)))
+(add-hook 'c-mode-common-hook
+  (lambda()
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+    (hs-minor-mode t)))
 
 ;; --- KEYBINDINGS ------------------------------------------------------------
 ;; оригинал https://gist.github.com/anonymous/2471669b376de09adc44
@@ -189,6 +210,11 @@
 (global-set-key (kbd "M-l") 'forward-char) ; Вправо
 (global-set-key (kbd "M-i") 'previous-line) ; Вверх
 (global-set-key (kbd "M-k") 'next-line) ; Вниз
+
+(define-key function-key-map (kbd "M-j") (kbd "M-о"))
+(define-key function-key-map (kbd "M-l") (kbd "M-д"))
+(define-key function-key-map (kbd "M-i") (kbd "M-ш"))
+(define-key function-key-map (kbd "M-k") (kbd "M-л"))
 
 ;; Move by word
 (global-set-key (kbd "M-u") 'backward-word)
@@ -414,7 +440,7 @@
 ---------------------------------------------------------------------------
 left                _a_: ace-window             _g_: in
 right               _s_: swap ace-window        _l_: out
-up                  _d_: delete ace window
+up                  _d_: delete ace window      
 down                _i_: ace maximize
 "
       ("<left>" windmove-left)
