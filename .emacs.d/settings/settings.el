@@ -5,6 +5,8 @@
 (setq user-full-name   "vfbnemesis")
 (setq user-mail-adress "vfbnemesis_mail")
 
+(setq default-input-method 'russian-computer)
+
 ;; Disable GUI components
 ;;убираем меню и тулбар и прокрутку
 ;;(menu-bar-mode -1)
@@ -454,7 +456,6 @@ down                _i_: ace maximize
       ("g" text-scale-increase)
       ("l" text-scale-decrease)
       ("q" nil "quit" :color blue))
-
     (global-set-key (kbd "<f5>") 'my/window-movement/body )
     ))
 
@@ -475,6 +476,19 @@ down                _i_: ace maximize
 	(?i delete-other-windows " Ace - Maximize Window")
 	(?o delete-other-windows))
       "List of actions for `aw-dispatch-default'.")
+    ))
+
+
+(use-package ace-jump-mode
+  :ensure t
+  :config
+  (progn
+    (autoload
+      'ace-jump-mode
+      "ace-jump-mode"
+      "Emacs quick move minor mode"
+      t)
+    (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)    
     ))
 
 
