@@ -522,7 +522,7 @@ down                _i_: ace maximize
   :commands (markdown-mode)
   :mode (("\\.markdown\\'" . markdown-mode)
 	 ("\\.md\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown")
+  :init (setq markdown-command "markdown")
   )
 
 ;; ----------------------------------------------------------------------------
