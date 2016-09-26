@@ -44,8 +44,8 @@
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 
-(setq org-agenda-files (quote ("~/org/gtd"
-                               "~/org/journal.org")))
+(setq org-agenda-files (quote ("~/org/gtd/binp.org"
+			       "~/org/gtd/personal.org")))
 
 ;;для выполнения питоновых команд из org-mode
 (org-babel-do-load-languages

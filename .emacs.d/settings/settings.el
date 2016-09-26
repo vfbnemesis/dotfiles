@@ -332,6 +332,7 @@
 
 ;; --- use-packages -----------------------------------------------------------
 ;; :init - execute code before a package is loaded
+;; :commands - autoload command
 ;; :config - execute code after a package is loaded
 ;; :defer - (отложенная загрузка)
 ;; :ensure - causes the package(s) to be installed automatically
@@ -516,13 +517,13 @@ down                _i_: ace maximize
     (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode)
+  :mode (("\\.markdown\\'" . markdown-mode)
+	 ("\\.md\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown")
+  )
+
 ;; ----------------------------------------------------------------------------
-
-;; markdown mode
-;;(autoload 'markdown-mode "markdown-mode"
-;;   "Major mode for editing Markdown files" t)
-;;(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-;;(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-;;(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-
 
