@@ -287,6 +287,7 @@
 (my/defshortcut ?p "~/org/gtd/personal.org")
 (my/defshortcut ?e "~/org/text/emacs/emacs.org")
 (my/defshortcut ?s "~/.emacs.d/settings/settings.el")
+(my/defshortcut ?l "~/org/text/bookmarks.org")
 
 ;; --- package manager --------------------------------------------------------
 
@@ -331,6 +332,7 @@
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 
 ;; --- use-packages -----------------------------------------------------------
+;; https://github.com/jwiegley/use-package
 ;; :init - execute code before a package is loaded
 ;; :commands - autoload command
 ;; :config - execute code after a package is loaded
@@ -493,6 +495,17 @@ down                _i_: ace maximize
     ))
 
 
+(use-package multiple-cursors
+  :ensure t
+  :config
+  (progn
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)    
+    ))
+
+
 (use-package verilog-mode
   :config
   (progn
@@ -516,6 +529,7 @@ down                _i_: ace maximize
 
     (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
+
 
 (use-package markdown-mode
   :ensure t

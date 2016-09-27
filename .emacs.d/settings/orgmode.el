@@ -69,13 +69,14 @@
 (setq org-export-coding-system 'utf-8)
 
 (setq org-capture-templates
-      '(;;other entries
+      '(;; journal entries
 	("j" "Journal" entry (file+datetree "~/org/journal.org")
 	 "**** %U %^{Title} %^g\n%?")
-	;;other entries
+	;; task entries
 	("t" "Todo task" entry (file "~/org/gtd/refile.org")
 	 "* TODO %^{Task} %^g\nEntered on: %U\n%?")
+	;; link entries
+	("l" "Link" entry (file+headline "~/org/text/bookmarks.org" "Inbox")
+	 "* [[%^{Link}][%^{description}]] %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?")
 	))
-
-
 
