@@ -17,16 +17,6 @@
 ;; (global-set-key (kbd "C-c <left>") 'outline-previous-visible-heading)
 ;; (global-set-key (kbd "C-c <right>") 'outline-next-visible-heading)
 
-;; Set up a keyboard shortcut to go to GTD and ORG file
-;; (global-set-key (kbd "C-c w") 
-;;                 (lambda () (interactive) (find-file "~/org/gtd/binp.org")))
-;; (global-set-key (kbd "C-c p") 
-;;                 (lambda () (interactive) (find-file "~/org/gtd/personal.org")))
-;; (global-set-key (kbd "C-c e") 
-;;                 (lambda () (interactive) (find-file "~/org/text/emacs/emacs.org")))
-;; (global-set-key (kbd "C-c s") 
-;;                 (lambda () (interactive) (find-file "~/.emacs.d/settings/settings.el")))
-
 (setq org-todo-keywords
       '((sequence "TODO(t)" ;; задача/проект требует выполнения
 		  "NEXT(n)" ;; следующее действие (можно брать и делать)
@@ -38,7 +28,41 @@
 	(sequence "SOMETIMES(s)" ;; сделать может быть когда-нибудь 
 		  "|" "CANCELLED(c)")
 	
-	(sequence "LEARN" "TRY" "|" "COMPLETE(x)"))) 
+	(sequence "LEARN" "TRY" "|" "COMPLETE(x)")
+	)) 
+
+(setq org-todo-keyword-faces
+      (quote (
+	      ("TODO"
+	       :background "red"
+	       :foreground "black"
+	       :weight bold
+	       :box (:line-width 2 :style released-button))
+	      
+	      ("NEXT"
+	       :background "IndianRed1"
+	       :foreground "black"
+	       :weight bold
+	       :box (:line-width 2 :style released-button))
+	      
+	      ("IN-PROGRESS"
+	       :background "orange"
+	       :foreground "black"
+	       :weight bold
+	       :box (:line-width 2 :style released-button))
+	      
+              ("WAITING"
+	       :background "yellow"
+	       :foreground "black"
+	       :weight bold
+	       :box (:line-width 2 :style released-button))
+	      
+              ("DONE"
+	       :background "forest green"
+	       :foreground "black"
+	       :weight bold
+	       :box (:line-width 2 :style released-button))
+	      )))
 
 (setq org-use-fast-todo-selection t)
 
