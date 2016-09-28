@@ -539,5 +539,9 @@ down                _i_: ace maximize
   :init (setq markdown-command "markdown")
   )
 
+
+(use-package org-pomodoro
+  :ensure t)
+
 ;; ----------------------------------------------------------------------------
 
