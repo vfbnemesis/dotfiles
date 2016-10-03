@@ -64,6 +64,20 @@
 	       :box (:line-width 2 :style released-button))
 	      )))
 
+(set-face-attribute 'org-priority nil
+                    :inherit font-lock-keyword-face 
+                    :inverse-video t 
+                    :box '(:line-width 2 :color "grey75" :style released-button))
+
+;; (setq org-priority-faces
+;;       (quote(
+;; 	     (?A . (:foreground "firebrick" :weight bold))
+;; 	     (?B . (:foreground "orange"))
+;; 	     (?C . (:foreground "green"))
+;; 	     (?D . (:foreground "purple"))
+;; 	     (?E . (:foreground "blue"))
+;; 	     )))
+
 (setq org-use-fast-todo-selection t)
 
 (global-set-key (kbd "C-c a") 'org-agenda)
