@@ -47,6 +47,8 @@
 ;; сохранять сессию перед выходом
 ;;  desktop-save-mode t)
 
+(setq-default indent-tabs-mode nil)
+
 (defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
 
 ;; --- scrolling --------------------------------------------------------------
