@@ -7,11 +7,17 @@
 
 (setq default-input-method 'russian-computer)
 
+(add-to-list 'load-path "~/.emacs.d/plugins")
+
+;; my minor mode
+;; в основном для клавиаттурных сочетаний
+(require 'my-mode)
+
 ;; Disable GUI components
 ;;убираем меню и тулбар и прокрутку
 ;;(menu-bar-mode -1)
 (tool-bar-mode -1)
-;;(scroll-bar-mode -1)
+(scroll-bar-mode -1)
 (setq redisplay-dont-pause t)  ;; лучшая отрисовка буфера
 
 ;; Inhibit startup/splash screen
@@ -59,8 +65,8 @@
 (setq scroll-step 1)
 ;; (setq scroll-conservatively 10000) чего делает эта переменная ?
 
-(global-set-key (kbd "M-<up>") (lambda () (interactive) (scroll-down 1)))
-(global-set-key (kbd "M-<down>") (lambda () (interactive) (scroll-up 1)))
+(define-key my-mode-map (kbd "M-<up>") (lambda () (interactive) (scroll-down 1)))
+(define-key my-mode-map (kbd "M-<down>") (lambda () (interactive) (scroll-up 1)))
 
 ;; --- Mode line configuration ------------------------------------------------
 (line-number-mode t) ; показать номер строки в mode-line
@@ -80,7 +86,7 @@
   (setq-local comment-auto-fill-only-comments t)
   (auto-fill-mode 1))
 
-(global-set-key (kbd "C-c q") 'auto-fill-mode-on)
+(define-key my-mode-map (kbd "C-c q") 'auto-fill-mode-on)
 
 ;; auto-fill mode for comment only
 (add-hook 'emacs-lisp-mode-hook 'comment-auto-fill-only-mode-on)
@@ -179,88 +185,53 @@
 ;; оригинал https://gist.github.com/anonymous/2471669b376de09adc44
 ;; http://ergoemacs.org/emacs/emacs_kill-ring.html
 
-(global-unset-key (kbd "M-j"))
-(global-unset-key (kbd "M-l"))
-(global-unset-key (kbd "M-i"))
-(global-unset-key (kbd "M-k"))
-
-(global-unset-key (kbd "M-u"))
-(global-unset-key (kbd "M-o"))
-
-(global-unset-key (kbd "M-H"))
-(global-unset-key (kbd "M-h"))
-
-(global-unset-key (kbd "M-I"))
-(global-unset-key (kbd "M-K"))
-
-(global-unset-key (kbd "M-J"))
-(global-unset-key (kbd "M-L"))
-
-(global-unset-key (kbd "M-f"))
-(global-unset-key (kbd "M-d"))
-
-(global-unset-key (kbd "M-e"))
-(global-unset-key (kbd "M-r"))
-
-(global-unset-key (kbd "M-n"))
-(global-unset-key (kbd "M-m"))
-
-(global-unset-key (kbd "M-s"))
-(global-unset-key (kbd "C-o"))
-
-
 ;; Крестовина
-(global-set-key (kbd "M-j") 'backward-char) ; Влево
-(global-set-key (kbd "M-l") 'forward-char) ; Вправо
-(global-set-key (kbd "M-i") 'previous-line) ; Вверх
-(global-set-key (kbd "M-k") 'next-line) ; Вниз
-
-(define-key function-key-map (kbd "M-j") (kbd "M-о"))
-(define-key function-key-map (kbd "M-l") (kbd "M-д"))
-(define-key function-key-map (kbd "M-i") (kbd "M-ш"))
-(define-key function-key-map (kbd "M-k") (kbd "M-л"))
+(define-key my-mode-map (kbd "M-j") 'backward-char) ; Влево
+(define-key my-mode-map (kbd "M-l") 'forward-char) ; Вправо
+(define-key my-mode-map (kbd "M-i") 'previous-line) ; Вверх
+(define-key my-mode-map (kbd "M-k") 'next-line) ; Вниз
 
 ;; Move by word
-(global-set-key (kbd "M-u") 'backward-word)
-(global-set-key (kbd "M-o") 'forward-word)
+(define-key my-mode-map (kbd "M-u") 'backward-word)
+(define-key my-mode-map (kbd "M-o") 'forward-word)
 
 ;; Move by paragraph
-(global-set-key (kbd "M-U") 'backward-paragraph)
-(global-set-key (kbd "M-O") 'forward-paragraph)
+(define-key my-mode-map (kbd "M-U") 'backward-paragraph)
+(define-key my-mode-map (kbd "M-O") 'forward-paragraph)
 
 ;; Move to beginning/ending of line
-(global-set-key (kbd "M-H") 'move-beginning-of-line)
-(global-set-key (kbd "M-h") 'move-end-of-line)
+(define-key my-mode-map (kbd "M-H") 'move-beginning-of-line)
+(define-key my-mode-map (kbd "M-h") 'move-end-of-line)
 
 ;; Move by screen (page up/down)
-(global-set-key (kbd "M-I") 'scroll-down-command)
-(global-set-key (kbd "M-K") 'scroll-up-command)
+(define-key my-mode-map (kbd "M-I") 'scroll-down-command)
+(define-key my-mode-map (kbd "M-K") 'scroll-up-command)
 
 ;; Move to beginning/ending of file
-(global-set-key (kbd "M-J") 'beginning-of-buffer)
-(global-set-key (kbd "M-L") 'end-of-buffer)
+(define-key my-mode-map (kbd "M-J") 'beginning-of-buffer)
+(define-key my-mode-map (kbd "M-L") 'end-of-buffer)
 
 
 ;; Редактирование
 ;;
 
 ;; Delete previous/next char.
-(global-set-key (kbd "M-f") 'delete-forward-char)
-(global-set-key (kbd "M-d") 'delete-backward-char)
+(define-key my-mode-map (kbd "M-f") 'delete-forward-char)
+(define-key my-mode-map (kbd "M-d") 'delete-backward-char)
 
 ;; Delete previous/next word.
-(global-set-key (kbd "M-e") 'backward-kill-word)
-(global-set-key (kbd "M-r") 'kill-word)
+(define-key my-mode-map (kbd "M-e") 'backward-kill-word)
+(define-key my-mode-map (kbd "M-r") 'kill-word)
 
 ;; Delete (whole) line
-(global-set-key (kbd "C-S-k") 'kill-whole-line)
+(define-key my-mode-map (kbd "C-S-k") 'kill-whole-line)
 
 ;; Enter
-(global-set-key (kbd "M-n") 'reindent-then-newline-and-indent)
-(global-set-key (kbd "M-m") 'reindent-then-newline-and-indent)
+(define-key my-mode-map (kbd "M-n") 'reindent-then-newline-and-indent)
+(define-key my-mode-map (kbd "M-m") 'reindent-then-newline-and-indent)
 
-(global-set-key (kbd "M-s") 'save-buffer) ; Сохранение
-(global-set-key (kbd "C-o") 'find-file) ; Открытие
+(define-key my-mode-map (kbd "M-s") 'save-buffer) ; Сохранение
+(define-key my-mode-map (kbd "C-o") 'find-file) ; Открытие
 
 ;; define key sequence
 ;;
@@ -307,12 +278,6 @@
 
 ;; --- load plugins -----------------------------------------------------------
 
-(add-to-list 'load-path "~/.emacs.d/plugins")
-
-;; my minor mode
-;; в основном для клавиаттурных сочетаний
-(require 'my-mode)
-
 ;; номера строк (слева)
 ;; http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el
 (require 'linum+)
@@ -326,7 +291,7 @@
 (setq bs-configurations
 '(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)))
 
-(global-set-key (kbd "<f2>") 'bs-show)
+(define-key my-mode-map (kbd "<f2>") 'bs-show)
 
 
 ;; recent files
@@ -335,7 +300,7 @@
 (setq recent-max-saved-items 200
       recent-max-menu-items 15)
 (recentf-mode)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(define-key my-mode-map (kbd "C-x C-r") 'recentf-open-files)
 
 ;; --- use-packages -----------------------------------------------------------
 ;; https://github.com/jwiegley/use-package
@@ -349,9 +314,9 @@
 (use-package sr-speedbar
   ;; браузер по файловой системе
   :ensure t
+  :bind (("<f12>" . sr-speedbar-toggle))
   :config
   (progn
-    (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
     (custom-set-variables
      '(speedbar-show-unknown-files t)) ;; отображение всех файлов
     (setq speedbar-use-images nil)
@@ -377,8 +342,8 @@
 
 (use-package expand-region
   :ensure t
-  :config
-  (global-set-key (kbd "C-=") 'er/expand-region))
+  :bind (("C-=" . er/expand-region))
+)
 
 
 (use-package ido
@@ -432,17 +397,18 @@
 
 (use-package smex
   :ensure t
+  :bind (("M-x" . smex)
+         ("C-c C-c M-x" . execute-extended-command))
   :config
   (progn
     (smex-initialize)
-    (global-set-key (kbd "M-x") 'smex)
-    ;;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-    (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
     ))
 
 
 (use-package hydra
   :ensure t
+  :bind (:map my-mode-map
+              ("<f5>" . my/window-movement/body))
   :config
   (progn
     (defhydra my/window-movement (:hint nil)
@@ -465,12 +431,13 @@ down                _i_: ace maximize
       ("g" text-scale-increase)
       ("l" text-scale-decrease)
       ("q" nil "quit" :color blue))
-    (global-set-key (kbd "<f5>") 'my/window-movement/body )
     ))
 
 
 (use-package ace-window
   :ensure t
+  :bind (:map my-mode-map
+              ("C-c w" . ace-window))
   :config
   (progn
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -490,17 +457,12 @@ down                _i_: ace maximize
 
 (use-package ace-jump-mode
   :ensure t
-  :config
-  (progn
-    (autoload
-      'ace-jump-mode
-      "ace-jump-mode"
-      "Emacs quick move minor mode"
-      t)
-    (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)    
-    ))
+  :bind (:map my-mode-map
+              ("C-c SPC" . ace-jump-mode))
+  )
 
 
+;; https://github.com/magnars/multiple-cursors.el
 (use-package multiple-cursors
   :ensure t
   :bind (:map my-mode-map
@@ -593,7 +555,7 @@ after `multiple-cursors-mode' is quit.")
     (setq verilog-indent-level-module 2)
     (setq verilog-tab-to-comment t)
 
-    (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
+    ;; (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
 
 
