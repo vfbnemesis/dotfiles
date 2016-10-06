@@ -349,7 +349,7 @@
 (use-package ido
   ;; ido (built-in) помогает выбирать
   ;; помогает выбирать
-  :defer t
+  ;; :defer t
   :init
   (progn
     (setq ido-enable-flex-matching  t) ; enable fuzzy search
