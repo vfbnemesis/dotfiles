@@ -55,6 +55,10 @@
 
 (setq-default indent-tabs-mode nil)
 
+;; удаляем пробелы и т.д.
+;; http://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
 (defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
 
 ;; --- scrolling --------------------------------------------------------------
