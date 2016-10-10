@@ -104,8 +104,8 @@
 (setq calendar-week-start-day 1
       calendar-day-name-array ["Вс" "Пн" "Вт" "Ср" "Чт" "Пт" "Сб"]
       calendar-month-name-array ["Январь" "Февраль" "Март" "Апрель"
-				 "Май" "Июнь" "Июль" "Август"
-				 "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
+                                 "Май" "Июнь" "Июль" "Август"
+                                 "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
 
 ;; --- move lines -------------------------------------------------------------
 
@@ -141,14 +141,14 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/plugins")
 
 (setq my-color-themes (list 'deeper-blue
-			    'wheatgrass
-			    'dark-laptop))
- 
+                            'wheatgrass
+                            'dark-laptop))
+
 (defun my-theme-set-default () ; Set the first row
       (interactive)
       (setq theme-current my-color-themes)
       (load-theme (car theme-current) t))
- 
+
 (defun my-describe-theme () ; Show the current theme
   (interactive)
   (message "%s" (car theme-current)))
@@ -170,12 +170,12 @@
 ;; --- hide/show C block ------------------------------------------------------
 (defvar hs-special-modes-alist
   (mapcar 'purecopy
-	  '((c-mode "{" "}" "/[*/]" nil nil)
-	    (c++-mode "{" "}" "/[*/]" nil nil)
-	    (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
-	    (java-mode "{" "}" "/[*/]" nil nil)
-	    (js-mode "{" "}" "/[*/]" nil)
-	    (emacs-lisp- "(" ")" nil))))
+          '((c-mode "{" "}" "/[*/]" nil nil)
+            (c++-mode "{" "}" "/[*/]" nil nil)
+            (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+            (java-mode "{" "}" "/[*/]" nil nil)
+            (js-mode "{" "}" "/[*/]" nil)
+            (emacs-lisp- "(" ")" nil))))
 
 (add-hook 'c-mode-common-hook
   (lambda()
@@ -245,7 +245,7 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; --- быстрый доступ к файлам (C-x r j)---------------------------------------
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649 
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 
 (defvar my/refile-map (make-sparse-keymap))
 
@@ -277,8 +277,8 @@
 
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
-	(package-refresh-contents)
-	(package-install 'use-package))
+        (package-refresh-contents)
+        (package-install 'use-package))
 
 ;; --- load plugins -----------------------------------------------------------
 
@@ -331,7 +331,7 @@
   :ensure t
   :config
   ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
-  (yas-global-mode 1))  
+  (yas-global-mode 1))
 
 
 (use-package auto-complete
@@ -360,7 +360,7 @@
     (setq ido-everywhere            t)
     (setq ido-create-new-buffer 'always) ; create a new buffer if no buffer matches substring
     (setq org-completion-use-ido t) ; use ido with org-mode
-    
+
     ;; customize the order in which files are sorted when Ido displays them in
     ;; the minibuffer. There are certain file extensions I use more than others,
     ;; so I tell Ido to emphasize those
@@ -382,20 +382,20 @@
       :ensure t
       :config
       (progn
-	;; disable ido faces to see flx highlights.
-	;; (setq ido-use-faces nil)
-	(flx-ido-mode 1)
-	))
+        ;; disable ido faces to see flx highlights.
+        ;; (setq ido-use-faces nil)
+        (flx-ido-mode 1)
+        ))
 
     (use-package ido-vertical-mode
       ;; flx-ido looks better with ido-vertical-mode
       :ensure t
       :config
       (progn
-	(setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)	
-	(ido-vertical-mode 1)
-	))
-    
+        (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+        (ido-vertical-mode 1)
+        ))
+
     ))
 
 
@@ -409,6 +409,32 @@
     ))
 
 
+(use-package swiper
+  :ensure t
+  :bind (:map my-mode-map
+              ("C-s" . swiper))
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+    ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+    ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    ;; (global-set-key (kbd "<f1> l") 'counsel-load-library)
+    ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    ;; (global-set-key (kbd "C-c g") 'counsel-git)
+    ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+    ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+    ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    ;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+
+
 (use-package hydra
   :ensure t
   :bind (:map my-mode-map
@@ -417,11 +443,11 @@
   (progn
     (defhydra my/window-movement (:hint nil)
 "
-^Winmovie^          ^ace-window^                ^text size^ 
+^Winmovie^          ^ace-window^                ^text size^
 ---------------------------------------------------------------------------
 left                _a_: ace-window             _g_: in
 right               _s_: swap ace-window        _l_: out
-up                  _d_: delete ace window      
+up                  _d_: delete ace window
 down                _i_: ace maximize
 "
       ("<left>" windmove-left)
@@ -449,21 +475,30 @@ down                _i_: ace maximize
 
     (defvar aw-dispatch-alist
       '((?x aw-delete-window " Ace - Delete Window")
-	(?m aw-swap-window " Ace - Swap Window")
-	(?n aw-flip-window)
-	(?v aw-split-window-vert " Ace - Split Vert Window")
-	(?b aw-split-window-horz " Ace - Split Horz Window")
-	(?i delete-other-windows " Ace - Maximize Window")
-	(?o delete-other-windows))
+        (?m aw-swap-window " Ace - Swap Window")
+        (?n aw-flip-window)
+        (?v aw-split-window-vert " Ace - Split Vert Window")
+        (?b aw-split-window-horz " Ace - Split Horz Window")
+        (?i delete-other-windows " Ace - Maximize Window")
+        (?o delete-other-windows))
       "List of actions for `aw-dispatch-default'.")
     ))
 
 
-(use-package ace-jump-mode
+(use-package avy
   :ensure t
   :bind (:map my-mode-map
-              ("C-c SPC" . ace-jump-mode))
+              ("C-c SPC" . avy-goto-word-or-subword-1)
+              ("C-c l" . avy-goto-line))
   )
+
+
+;; (use-package ace-jump-mode
+;;   :ensure t
+;;   :bind (:map my-mode-map
+;;               ("C-c SPC" . ace-jump-mode)
+;;               ("C-c l" . ace-jump-line-mode))
+;;   )
 
 
 ;; https://github.com/magnars/multiple-cursors.el
@@ -522,6 +557,12 @@ after `multiple-cursors-mode' is quit.")
     ))
 
 
+(use-package undo-tree
+  :ensure t
+  :init
+  (global-undo-tree-mode))
+
+
 (use-package powerline
   :ensure t
   :config
@@ -529,9 +570,9 @@ after `multiple-cursors-mode' is quit.")
     (powerline-default-theme)
     (setq powerline-arrow-shape 'arrow)   ;; the default
     ;; (setq powerline-arrow-shape 'curve)   ;; give your mode-line curves
-    ;; (setq powerline-arrow-shape 'arrow14) ;; best for small fonts  
+    ;; (setq powerline-arrow-shape 'arrow14) ;; best for small fonts
     (setq powerline-color1 "grey22")
-    (setq powerline-color2 "grey40") 
+    (setq powerline-color2 "grey40")
     (custom-set-faces
      '(mode-line ((t (:foreground "#030303" :background "#bdbdbd" :box nil))))
      '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
@@ -567,7 +608,7 @@ after `multiple-cursors-mode' is quit.")
   :ensure t
   :commands (markdown-mode)
   :mode (("\\.markdown\\'" . markdown-mode)
-	 ("\\.md\\'" . markdown-mode))
+         ("\\.md\\'" . markdown-mode))
   :init (setq markdown-command "markdown")
   )
 
@@ -576,4 +617,3 @@ after `multiple-cursors-mode' is quit.")
   :ensure t)
 
 ;; ----------------------------------------------------------------------------
-
