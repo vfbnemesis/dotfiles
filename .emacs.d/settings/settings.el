@@ -108,7 +108,6 @@
                                  "Сентябрь" "Октябрь" "Ноябрь" "Декабрь"])
 
 ;; --- move lines -------------------------------------------------------------
-
 (defun move-line (n)
   "Move the current line up or down by N lines."
   (interactive "p")
@@ -240,8 +239,6 @@
 ;; define key sequence
 ;;
 
-(global-set-key (kbd "<f6>") 'visual-line-mode)
-(global-set-key (kbd "<f8>") 'whitespace-mode)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; --- быстрый доступ к файлам (C-x r j)---------------------------------------
@@ -297,15 +294,6 @@
 
 (define-key my-mode-map (kbd "<f2>") 'bs-show)
 
-
-;; recent files
-;; build-in
-(require 'recentf)
-(setq recent-max-saved-items 200
-      recent-max-menu-items 15)
-(recentf-mode)
-(define-key my-mode-map (kbd "C-x C-r") 'recentf-open-files)
-
 ;; --- use-packages -----------------------------------------------------------
 ;; https://github.com/jwiegley/use-package
 ;; :init - execute code before a package is loaded
@@ -326,6 +314,17 @@
     (setq speedbar-use-images nil)
     ))
 
+
+(use-package recentf
+  :ensure t
+  :bind (:map my-mode-map
+              ("C-x C-r" . recentf-open-files))
+  :config
+  (progn
+    (setq recent-max-saved-items 200
+          recent-max-menu-items 15)
+    (recentf-mode t)
+    ))
 
 (use-package yasnippet
   :ensure t
@@ -435,31 +434,61 @@
     ))
 
 
+(use-package whitespace
+  :ensure t
+  )
+
+
 (use-package hydra
   :ensure t
   :bind (:map my-mode-map
-              ("<f5>" . my/window-movement/body))
+              ("<f5>" . my/window-movement/body)
+              ("<f6>" . my/hydra-toggle/body))
   :config
   (progn
+    ;; --------------------------------------------------------------------------
     (defhydra my/window-movement (:hint nil)
-"
-^Winmovie^          ^ace-window^                ^text size^
----------------------------------------------------------------------------
-left                _a_: ace-window             _g_: in
-right               _s_: swap ace-window        _l_: out
-up                  _d_: delete ace window
-down                _i_: ace maximize
+      "
+^Winmovie^       ^ace-window^             ^Split^                  ^text size^
+^^^^^^-----------------------------------------------------------------------
+ _<left>_        _a_: ace-window          _2_: split-window-below  _j_: in
+ _<right>_       _s_: swap ace-window     _3_: split-window-right  _k_: out
+ _<up>_          _d_: delete ace window   ^ ^                      _0_: reset
+ _<down>_        _i_: ace maximize        ^ ^                      ^ ^
 "
       ("<left>" windmove-left)
       ("<right>" windmove-right)
       ("<down>" windmove-down)
       ("<up>" windmove-up)
+
       ("a" ace-window)
       ("s" ace-swap-window)
       ("d" ace-delete-window)
       ("i" ace-maximize-window)
-      ("g" text-scale-increase)
-      ("l" text-scale-decrease)
+
+      ("2" split-window-below nil)
+      ("3" split-window-right nil)
+
+      ("j" text-scale-increase)
+      ("k" text-scale-decrease)
+      ("0" (text-scale-set 0))
+
+      ("q" nil "quit" :color blue))
+
+    ;; --------------------------------------------------------------------------
+    (defhydra my/hydra-toggle (:hint nil)
+      "
+_a_: abbrev-mode        %`abbrev-mode
+_f_: auto-fill-mode     %`auto-fill-function
+_t_: truncate-lines     %`truncate-lines
+_w_: whitespace-mode    %`whitespace-mode
+_v_: visual-line-mode   %`visual-line-mode
+"
+      ("a" abbrev-mode nil)
+      ("w" whitespace-mode nil)
+      ("f" auto-fill-mode nil)
+      ("t" toggle-truncate-lines nil)
+      ("v" visual-line-mode)
       ("q" nil "quit" :color blue))
     ))
 
@@ -491,14 +520,6 @@ down                _i_: ace maximize
               ("C-c SPC" . avy-goto-word-or-subword-1)
               ("C-c l" . avy-goto-line))
   )
-
-
-;; (use-package ace-jump-mode
-;;   :ensure t
-;;   :bind (:map my-mode-map
-;;               ("C-c SPC" . ace-jump-mode)
-;;               ("C-c l" . ace-jump-line-mode))
-;;   )
 
 
 ;; https://github.com/magnars/multiple-cursors.el
