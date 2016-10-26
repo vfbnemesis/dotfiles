@@ -314,7 +314,6 @@
     (setq speedbar-use-images nil)
     ))
 
-
 (use-package recentf
   :ensure t
   :bind (:map my-mode-map
@@ -332,7 +331,6 @@
   ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
   (yas-global-mode 1))
 
-
 (use-package auto-complete
   :ensure t
   :config
@@ -342,12 +340,10 @@
     (global-auto-complete-mode t)
     ))
 
-
 (use-package expand-region
   :ensure t
   :bind (("C-=" . er/expand-region))
-)
-
+  )
 
 (use-package ido
   ;; ido (built-in) помогает выбирать
@@ -394,9 +390,7 @@
         (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
         (ido-vertical-mode 1)
         ))
-
     ))
-
 
 (use-package smex
   :ensure t
@@ -406,7 +400,6 @@
   (progn
     (smex-initialize)
     ))
-
 
 (use-package swiper
   :ensure t
@@ -433,17 +426,15 @@
     ;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
 
-
 (use-package whitespace
   :ensure t
   )
 
-
 (use-package hydra
   :ensure t
-  :bind (:map my-mode-map
-              ("<f5>" . my/window-movement/body)
-              ("<f6>" . my/hydra-toggle/body))
+  ;; :bind (:map my-mode-map
+  ;;             ("<f5>" . my/window-movement/body)
+  ;;             ("<f6>" . my/hydra-toggle/body))
   :config
   (progn
     ;; --------------------------------------------------------------------------
@@ -492,6 +483,16 @@ _v_: visual-line-mode   %`visual-line-mode
       ("q" nil "quit" :color blue))
     ))
 
+(use-package key-chord
+  :ensure t
+  :init
+  (progn
+    ;; (fset 'key-chord-define 'my/key-chord-define)
+    (setq key-chord-one-key-delay 0.16)
+    (key-chord-mode 1)
+    (key-chord-define-global "yy" 'my/window-movement/body)
+    (key-chord-define-global "tt" 'my/hydra-toggle/body)
+    ))
 
 (use-package ace-window
   :ensure t
@@ -513,14 +514,12 @@ _v_: visual-line-mode   %`visual-line-mode
       "List of actions for `aw-dispatch-default'.")
     ))
 
-
 (use-package avy
   :ensure t
   :bind (:map my-mode-map
               ("C-c SPC" . avy-goto-word-or-subword-1)
               ("C-c l" . avy-goto-line))
   )
-
 
 ;; https://github.com/magnars/multiple-cursors.el
 (use-package multiple-cursors
@@ -577,12 +576,10 @@ after `multiple-cursors-mode' is quit.")
     (add-hook 'multiple-cursors-mode-disabled-hook #'modi/mc-when-disabled)
     ))
 
-
 (use-package undo-tree
   :ensure t
   :init
   (global-undo-tree-mode))
-
 
 (use-package powerline
   :ensure t
@@ -598,7 +595,6 @@ after `multiple-cursors-mode' is quit.")
      '(mode-line ((t (:foreground "#030303" :background "#bdbdbd" :box nil))))
      '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
   ))
-
 
 (use-package verilog-mode
   :config
@@ -624,7 +620,6 @@ after `multiple-cursors-mode' is quit.")
     ;; (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
 
-
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode)
@@ -633,8 +628,6 @@ after `multiple-cursors-mode' is quit.")
   :init (setq markdown-command "markdown")
   )
 
-
 (use-package org-pomodoro
   :ensure t)
-
 ;; ----------------------------------------------------------------------------
