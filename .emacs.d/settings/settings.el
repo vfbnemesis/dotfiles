@@ -630,4 +630,53 @@ after `multiple-cursors-mode' is quit.")
 
 (use-package org-pomodoro
   :ensure t)
+
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode)
+  )
+
+(use-package wrap-region
+  :ensure t
+  :config
+  (progn
+    ;; Enable `wrap-region' in the following major modes
+    (dolist (hook '(emacs-lisp-mode-hook
+                    org-mode-hook
+                    text-mode-hook
+                    markdown-mode-hook))
+      (add-hook hook #'wrap-region-mode))
+
+    ;; Override the default `wrap-region-define-wrappers' function so that it
+    ;; does not bind the "[", "{", "<" keys each time `wrap-region-mode' is
+    ;; enabled in a buffer.
+    (defun wrap-region-define-wrappers ()
+      "Defines defaults wrappers."
+      (mapc
+       (lambda (pair)
+         (apply 'wrap-region-add-wrapper pair))
+       '(("\"" "\"")
+         ("'"  "'")
+         ("("  ")")))
+      ;; Unbind the wrap region pairs which I am very unlikely to us.
+      ;; Doing so allows me to bind those to more useful functions in
+      ;; `region-bindings-mode-map'. See `setup-multiple-cursors.el' file
+      ;; for examples.
+      (wrap-region-unset-key "[")
+      (wrap-region-unset-key "{")
+      (wrap-region-unset-key "<"))
+
+    (wrap-region-add-wrapper "`" "'" nil 'emacs-lisp-mode)
+
+    (wrap-region-add-wrapper "`" "`"   nil '(text-mode markdown-mode))
+    (wrap-region-add-wrapper "**" "**" "*" '(text-mode markdown-mode))
+    (wrap-region-add-wrapper "*" "*"   "/" '(text-mode markdown-mode))
+    (wrap-region-add-wrapper "~~" "~~" "+" '(text-mode markdown-mode))
+
+    (wrap-region-add-wrapper "=" "=" nil 'org-mode)
+    (wrap-region-add-wrapper "*" "*" nil 'org-mode)
+    (wrap-region-add-wrapper "/" "/" nil 'org-mode)
+    (wrap-region-add-wrapper "_" "_" nil 'org-mode)
+    (wrap-region-add-wrapper "+" "+" nil 'org-mode)))
 ;; ----------------------------------------------------------------------------
