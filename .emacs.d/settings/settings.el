@@ -184,63 +184,6 @@
     (local-set-key (kbd "C-c <down>")  'hs-show-all)
     (hs-minor-mode t)))
 
-;; --- KEYBINDINGS ------------------------------------------------------------
-;; оригинал https://gist.github.com/anonymous/2471669b376de09adc44
-;; http://ergoemacs.org/emacs/emacs_kill-ring.html
-
-;; Крестовина
-(define-key my-mode-map (kbd "M-j") 'backward-char) ; Влево
-(define-key my-mode-map (kbd "M-l") 'forward-char) ; Вправо
-(define-key my-mode-map (kbd "M-i") 'previous-line) ; Вверх
-(define-key my-mode-map (kbd "M-k") 'next-line) ; Вниз
-
-;; Move by word
-(define-key my-mode-map (kbd "M-u") 'backward-word)
-(define-key my-mode-map (kbd "M-o") 'forward-word)
-
-;; Move by paragraph
-(define-key my-mode-map (kbd "M-U") 'backward-paragraph)
-(define-key my-mode-map (kbd "M-O") 'forward-paragraph)
-
-;; Move to beginning/ending of line
-(define-key my-mode-map (kbd "M-H") 'move-beginning-of-line)
-(define-key my-mode-map (kbd "M-h") 'move-end-of-line)
-
-;; Move by screen (page up/down)
-(define-key my-mode-map (kbd "M-I") 'scroll-down-command)
-(define-key my-mode-map (kbd "M-K") 'scroll-up-command)
-
-;; Move to beginning/ending of file
-(define-key my-mode-map (kbd "M-J") 'beginning-of-buffer)
-(define-key my-mode-map (kbd "M-L") 'end-of-buffer)
-
-
-;; Редактирование
-;;
-
-;; Delete previous/next char.
-(define-key my-mode-map (kbd "M-f") 'delete-forward-char)
-(define-key my-mode-map (kbd "M-d") 'delete-backward-char)
-
-;; Delete previous/next word.
-(define-key my-mode-map (kbd "M-e") 'backward-kill-word)
-(define-key my-mode-map (kbd "M-r") 'kill-word)
-
-;; Delete (whole) line
-(define-key my-mode-map (kbd "C-S-k") 'kill-whole-line)
-
-;; Enter
-(define-key my-mode-map (kbd "M-n") 'reindent-then-newline-and-indent)
-(define-key my-mode-map (kbd "M-m") 'reindent-then-newline-and-indent)
-
-(define-key my-mode-map (kbd "M-s") 'save-buffer) ; Сохранение
-(define-key my-mode-map (kbd "C-o") 'find-file) ; Открытие
-
-;; define key sequence
-;;
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
 ;; --- быстрый доступ к файлам (C-x r j)---------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 
@@ -680,9 +623,6 @@ narrowed."
          ("\\.md\\'" . markdown-mode))
   :init (setq markdown-command "markdown")
   )
-
-(use-package org-pomodoro
-  :ensure t)
 
 (use-package which-key
   :ensure t

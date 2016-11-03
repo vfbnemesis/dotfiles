@@ -119,3 +119,7 @@
   ("t" org-timer-item)
   ("z" (org-info "Timers")))
   )
+
+;; This adds very basic support for Pomodoro technique in Emacs org-mode
+(use-package org-pomodoro
+  :ensure t)
