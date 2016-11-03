@@ -596,6 +596,59 @@ after `multiple-cursors-mode' is quit.")
      '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
   ))
 
+(use-package iedit
+  :ensure t
+  :bind (:map my-mode-map
+              ("C-c ;" . iedit-mode))
+  )
+
+;; if you're windened, narrow to the region, if you're narrowed, widen
+;; bound to C-x n
+(defun narrow-or-widen-dwim (p)
+  "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
+Intelligently means: region, org-src-block, org-subtree, or defun,
+whichever applies first.
+Narrowing to org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer is already
+narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning) (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing command.
+         ;; Remove this first conditional if you don't want it.
+         (cond ((ignore-errors (org-edit-src-code))
+                (delete-other-windows))
+               ((org-at-block-p)
+                (org-narrow-to-block))
+               (t (org-narrow-to-subtree))))
+        (t (narrow-to-defun))))
+
+;; (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+
+;; deletes all the whitespace when you hit backspace or delete
+(use-package hungry-delete
+  :ensure t
+  :config
+  (progn
+    (setq hungry-delete-chars-to-skip " \t\r\f\v")
+
+    (defun modi/turn-off-hungry-delete-mode ()
+      "Turn off hungry delete mode."
+      (hungry-delete-mode -1))
+
+    ;; Enable `hungry-delete-mode' everywhere ..
+    (global-hungry-delete-mode)
+
+    ;; Except ..
+    ;; `hungry-delete-mode'-loaded backspace does not work in `wdired-mode',
+    ;; i.e. when editing file names in the *Dired* buffer.
+    ;; (add-hook 'wdired-mode-hook #'modi/turn-off-hungry-delete-mode)
+    ))
+
 (use-package verilog-mode
   :config
   (progn
@@ -635,6 +688,10 @@ after `multiple-cursors-mode' is quit.")
   :ensure t
   :config
   (which-key-mode)
+  )
+
+(use-package projectile
+  :ensure t
   )
 
 (use-package wrap-region
