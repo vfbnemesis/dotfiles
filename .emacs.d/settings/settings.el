@@ -205,6 +205,7 @@
 (my/defshortcut ?e "~/org/text/emacs/emacs.org")
 (my/defshortcut ?s "~/.emacs.d/settings/settings.el")
 (my/defshortcut ?l "~/org/text/bookmarks.org")
+(my/defshortcut ?o "~/org")
 
 ;; --- package manager --------------------------------------------------------
 
@@ -381,7 +382,8 @@
   :config
   (progn
     ;; --------------------------------------------------------------------------
-    (defhydra my/window-movement (:hint nil)
+    (defhydra my/window-movement (:color blue
+                                  :hint nil)
       "
 ^Winmovie^       ^ace-window^             ^Split^                  ^text size^
 ^^^^^^-----------------------------------------------------------------------
@@ -403,13 +405,12 @@
       ("2" split-window-below nil)
       ("3" split-window-right nil)
 
-      ("j" text-scale-increase)
-      ("k" text-scale-decrease)
+      ("j" text-scale-increase :color red)
+      ("k" text-scale-decrease :color red)
       ("0" (text-scale-set 0))
 
       ("q" nil "quit" :color blue))
 
-    ;; --------------------------------------------------------------------------
     (defhydra my/hydra-toggle (:hint nil)
       "
 _a_: abbrev-mode        %`abbrev-mode
@@ -424,6 +425,20 @@ _v_: visual-line-mode   %`visual-line-mode
       ("t" toggle-truncate-lines nil)
       ("v" visual-line-mode)
       ("q" nil "quit" :color blue))
+
+    (defhydra my/hydra-bookmark (:color blue
+                                 :hint nil)
+      "
+_s_: set bookmark
+_j_: jump bookmark
+_l_: list bookmark
+_w_: write bookmark to file
+"
+      ("s" bookmark-set)
+      ("j" bookmark-jump)
+      ("l" list-bookmarks)
+      ("w" bookmark-write)
+      ("q" nil "quit"))
     ))
 
 (use-package key-chord
@@ -435,6 +450,7 @@ _v_: visual-line-mode   %`visual-line-mode
     (key-chord-mode 1)
     (key-chord-define-global "yy" 'my/window-movement/body)
     (key-chord-define-global "tt" 'my/hydra-toggle/body)
+    (key-chord-define-global "bb" 'my/hydra-bookmark/body)
     ))
 
 (use-package ace-window
