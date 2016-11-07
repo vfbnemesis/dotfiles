@@ -650,6 +650,15 @@ narrowed."
   :ensure t
   )
 
+(use-package highlight-symbol
+  :ensure t
+  :bind (:map my-mode-map
+              ("<f5>" . highlight-symbol)
+              ("C-<f5>" . highlight-symbol-next)
+              ("S-<f5>" . highlight-symbol-prev)
+              ("M-<f5>" . highlight-symbol-query-replace))
+  )
+
 (use-package wrap-region
   :ensure t
   :config
