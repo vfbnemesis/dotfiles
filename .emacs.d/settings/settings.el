@@ -227,7 +227,7 @@
 ;; http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el
 (require 'linum+)
 (setq linum-format "%d ")
-(global-linum-mode 1)
+;; (global-linum-mode 1)
 
 
 ;; buffer show файлы + scratch
@@ -658,6 +658,74 @@ narrowed."
               ("S-<f5>" . highlight-symbol-prev)
               ("M-<f5>" . highlight-symbol-query-replace))
   )
+
+;;; bm
+;; https://github.com/joodland/bm
+(use-package bm
+         :ensure t
+         :init
+         ;; restore on load (even before you require bm)
+         (setq bm-restore-repository-on-load t)
+         :bind (:map my-mode-map
+                     ("C-c b" . hydra-bm/body))
+         :config
+         ;; Allow cross-buffer 'next'
+         (setq bm-cycle-all-buffers t)
+         ;; where to store persistant files
+         (setq bm-repository-file "~/.emacs.d/bm-repository")
+         ;; save bookmarks
+         (setq-default bm-buffer-persistence t)
+         ;; Loading the repository from file when on start up.
+         (add-hook' after-init-hook 'bm-repository-load)
+         ;; Restoring bookmarks when on file find.
+         (add-hook 'find-file-hooks 'bm-buffer-restore)
+         ;; Saving bookmarks
+         (add-hook 'kill-buffer-hook #'bm-buffer-save)
+         ;; Saving the repository to file when on exit.
+         ;; kill-buffer-hook is not called when Emacs is killed, so we
+         ;; must save all bookmarks first.
+         (add-hook 'kill-emacs-hook #'(lambda nil
+                                          (bm-buffer-save-all)
+                                          (bm-repository-save)))
+         ;; The `after-save-hook' is not necessary to use to achieve persistence,
+         ;; but it makes the bookmark data in repository more in sync with the file
+         ;; state.
+         (add-hook 'after-save-hook #'bm-buffer-save)
+         ;; Restoring bookmarks
+         (add-hook 'find-file-hooks   #'bm-buffer-restore)
+         (add-hook 'after-revert-hook #'bm-buffer-restore)
+         ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+         ;; but it makes the bookmark data in repository more in sync with the file
+         ;; state. This hook might cause trouble when using packages
+         ;; that automatically reverts the buffer (like vc after a check-in).
+         ;; This can easily be avoided if the package provides a hook that is
+         ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+         ;; Then new bookmarks can be saved before the buffer is reverted.
+         ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+         (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+         (defhydra hydra-bm (:color pink
+                             :hint nil
+                             :body-pre (when (not (use-region-p)) (push-mark)))
+           "
+Bookmark _n_ext (_N_ in lifo order)            toggle book_m_ark        ^^_/_ bm lines matching regexp                          toggle per_s_istence
+         _p_revious (_P_ in lifo order)        _a_nnotate               _x_/_X_ remove all bm from current/all buffer(s)        _r_eturn to from where you started
+    "
+           ("m"   bm-toggle)
+           ("M"   bm-toggle :color blue)
+           ("a"   bm-bookmark-annotate :color blue)
+           ("n"   bm-common-next)
+           ("N"   bm-lifo-next)
+           ("p"   bm-common-previous)
+           ("P"   bm-lifo-previous)
+           ("/"   modi/bm-bookmark-regexp :color blue)
+           ("s"   bm-toggle-buffer-persistence)
+           ("x"   bm-remove-all-current-buffer :color blue)
+           ("X"   bm-remove-all-all-buffers :color blue)
+           ("r"   pop-to-mark-command :color blue)
+           ("RET" nil "cancel" :color blue)
+           ("q" nil "cancel" :color blue))
+         )
+
 
 (use-package wrap-region
   :ensure t
