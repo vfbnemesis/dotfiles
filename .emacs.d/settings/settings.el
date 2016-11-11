@@ -5,8 +5,6 @@
 (setq user-full-name   "vfbnemesis")
 (setq user-mail-adress "vfbnemesis_mail")
 
-(setq default-input-method 'russian-computer)
-
 (add-to-list 'load-path "~/.emacs.d/plugins")
 
 ;; my minor mode
@@ -206,6 +204,34 @@
 (my/defshortcut ?s "~/.emacs.d/settings/settings.el")
 (my/defshortcut ?l "~/org/text/bookmarks.org")
 (my/defshortcut ?o "~/org")
+
+(setq default-input-method 'russian-computer)
+;; --- Ввод командных комбинаций без переключения русской раскладки -----------
+;; --- http://ru-emacs.livejournal.com/82428.html
+(defun reverse-input-method (input-method)
+  "Build the reverse mapping of single letters from INPUT-METHOD."
+  (interactive
+   (list (read-input-method-name "Use input method (default current): ")))
+  (if (and input-method (symbolp input-method))
+      (setq input-method (symbol-name input-method)))
+  (let ((current current-input-method)
+        (modifiers '(nil (control) (meta) (control meta))))
+    (when input-method
+      (activate-input-method input-method))
+    (when (and current-input-method quail-keyboard-layout)
+      (dolist (map (cdr (quail-map)))
+        (let* ((to (car map))
+               (from (quail-get-translation
+                      (cadr map) (char-to-string to) 1)))
+          (when (and (characterp from) (characterp to))
+            (dolist (mod modifiers)
+              (define-key local-function-key-map
+                (vector (append mod (list from)))
+                (vector (append mod (list to)))))))))
+    (when input-method
+      (activate-input-method current))))
+
+(reverse-input-method 'russian-computer)
 
 ;; --- package manager --------------------------------------------------------
 
