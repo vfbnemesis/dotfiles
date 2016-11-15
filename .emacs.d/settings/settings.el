@@ -43,7 +43,7 @@
 (setq display-time-default-load-average nil)
 
 ;; cua-mode
-(cua-mode t)
+;; (cua-mode t)
 
 ;; перемещение между окнами
 ;;(windmove-default-keybindings)
@@ -58,6 +58,12 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
+
+(setq save-interprogram-paste-before-kill t)
+
+(global-auto-revert-mode 1) ;; you might not want this
+(setq auto-revert-verbose nil) ;; or this
+(define-key my-mode-map (kbd "<f6>") 'revert-buffer)
 
 ;; --- scrolling --------------------------------------------------------------
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
@@ -371,6 +377,22 @@
     (smex-initialize)
     ))
 
+(use-package counsel
+  :ensure t
+  :bind (("M-y" . counsel-yank-pop))
+  :bind (:map ivy-minibuffer-map
+              ("M-y" . ivy-next-line))
+  )
+
+(use-package ivy
+  :ensure t
+  ;; :diminish (ivy-mode)
+  ;; :bind (("C-x b" . ivy-switch-buffer))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy))
+
 (use-package swiper
   :ensure t
   :bind (:map my-mode-map
@@ -379,6 +401,7 @@
   (progn
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
     ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
     ;; (global-set-key (kbd "<f6>") 'ivy-resume)
     ;; (global-set-key (kbd "M-x") 'counsel-M-x)
