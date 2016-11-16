@@ -396,7 +396,8 @@
 (use-package swiper
   :ensure t
   :bind (:map my-mode-map
-              ("C-s" . swiper))
+              ("C-s" . swiper)
+              ("C-c u" . swiper-all))
   :config
   (progn
     (ivy-mode 1)
