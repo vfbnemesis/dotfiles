@@ -709,6 +709,11 @@ narrowed."
               ("M-<f5>" . highlight-symbol-query-replace))
   )
 
+(use-package volatile-highlights
+  :ensure t
+  :config
+  (volatile-highlights-mode t))
+
 ;;; bm
 ;; https://github.com/joodland/bm
 (use-package bm
