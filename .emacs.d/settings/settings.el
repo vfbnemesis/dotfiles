@@ -739,6 +739,19 @@ narrowed."
   (setq jedi:complete-on-dot t)
   (setq jedi:environment-root "jedi"))
 
+;; (use-package highlight-indentation
+;;   :ensure t
+;;   :config
+;;   (set-face-background 'highlight-indentation-face "#454945")
+;;   ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+;;   (add-hook 'python-mode-hook 'highlight-indentation-mode))
+
+(use-package indent-guide
+  :ensure t
+  :config
+  (set-face-foreground 'indent-guide-face "cyan")
+  (add-hook 'python-mode-hook 'indent-guide-mode))
+
 ;;; bm
 ;; https://github.com/joodland/bm
 (use-package bm
