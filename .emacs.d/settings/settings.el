@@ -239,6 +239,10 @@
 
 (reverse-input-method 'russian-computer)
 
+;; --- python -----------------------------------------------------------------
+(setq python-shell-interpreter "python3"
+      python-shell-interpreter-args "-i")
+
 ;; --- package manager --------------------------------------------------------
 
 (require 'package)
@@ -723,7 +727,7 @@ narrowed."
 
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode))
+  :init (global-flycheck-mode t))
 
 ;;; bm
 ;; https://github.com/joodland/bm
