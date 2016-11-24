@@ -239,8 +239,8 @@
 
 (reverse-input-method 'russian-computer)
 
-;; --- python -----------------------------------------------------------------
-(setq python-shell-interpreter "python3"
+;; --- python.el --------------------------------------------------------------
+(setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i")
 
 ;; --- package manager --------------------------------------------------------
@@ -718,16 +718,26 @@ narrowed."
   :config
   (volatile-highlights-mode t))
 
-(use-package fill-column-indicator
-  :ensure t
-  :config
-  (define-globalized-minor-mode
-    global-fci-mode fci-mode (lambda () (fci-mode 1)))
-  (global-fci-mode t))
+;; (use-package fill-column-indicator
+;;   :ensure t
+;;   :config
+;;   (define-globalized-minor-mode
+;;     global-fci-mode fci-mode (lambda () (fci-mode 1)))
+;;   (global-fci-mode t))
 
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode t))
+  :init
+  (setq flycheck-python-pylint-executable "pylint3")
+  (global-flycheck-mode t))
+
+(use-package jedi
+  :ensure t
+  :init
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (add-hook 'python-mode-hook 'jedi:ac-setup)
+  (setq jedi:complete-on-dot t)
+  (setq jedi:environment-root "jedi"))
 
 ;;; bm
 ;; https://github.com/joodland/bm
