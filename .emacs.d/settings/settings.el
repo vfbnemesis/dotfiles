@@ -26,7 +26,7 @@
 ;; включить выделение выражений между {},[],()
 (show-paren-mode t)
 ;; выделить цветом выражения между {},[],()
-(setq show-paren-style 'expression)
+(setq show-paren-style 'mixed)
 
 ;; подсветка текущей строки
 (global-hl-line-mode t)
@@ -749,6 +749,13 @@ narrowed."
   (setq jedi:complete-on-dot t)
   (setq jedi:environment-root "jedi"))
 
+;; https://github.com/antonj/Highlight-Indentation-for-Emacs
+;; Provides two minor modes `highlight-indentation-mode' and
+;; `highlight-indentation-current-column-mode'.
+;;     * `highlight-indentation-mode' displays guidelines
+;;       indentation (space indentation only).
+;;     * `highlight-indentation-current-column-mode' displays guidelines
+;;       for the current-point indentation (space indentation only).
 ;; (use-package highlight-indentation
 ;;   :ensure t
 ;;   :config
@@ -761,6 +768,11 @@ narrowed."
   :config
   (set-face-foreground 'indent-guide-face "cyan")
   (add-hook 'python-mode-hook 'indent-guide-mode))
+
+;; (use-package smartparens
+;;   :ensure t
+
+;;   )
 
 ;;; bm
 ;; https://github.com/joodland/bm
@@ -829,7 +841,10 @@ Bookmark _n_ext (_N_ in lifo order)            toggle book_m_ark        ^^_/_ bm
            ("q" nil "cancel" :color blue))
          )
 
-
+;; https://github.com/rejeep/wrap-region.el Wrap Region is a minor mode for
+;; Emacs that wraps a region with punctuations. For "tagged" markup modes, such
+;; as HTML and XML, it wraps with tags. Select a region and press any of the
+;; following keys: ", ', (, {, [.
 (use-package wrap-region
   :ensure t
   :config
