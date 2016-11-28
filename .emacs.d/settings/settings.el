@@ -239,6 +239,14 @@
 
 (reverse-input-method 'russian-computer)
 
+;; --- my func ---------------------------------------------------------------
+;; System-type definition
+(defun system-is-linux ()
+  (string-equal system-type "gnu/linux"))
+
+(defun system-is-windows ()
+  (string-equal system-type "windows-nt"))
+
 ;; --- python.el --------------------------------------------------------------
 (setq python-shell-interpreter "ipython3"
       python-shell-interpreter-args "-i")
@@ -727,12 +735,14 @@ narrowed."
 
 (use-package flycheck
   :ensure t
+  :if (system-is-linux)
   :init
   (setq flycheck-python-pylint-executable "pylint3")
   (global-flycheck-mode t))
 
 (use-package jedi
   :ensure t
+  :if (system-is-linux)
   :init
   (add-hook 'python-mode-hook 'jedi:setup)
   (add-hook 'python-mode-hook 'jedi:ac-setup)
