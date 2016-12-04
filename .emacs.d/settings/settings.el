@@ -740,6 +740,12 @@ narrowed."
   (setq flycheck-python-pylint-executable "pylint3")
   (global-flycheck-mode t))
 
+;; https://zhimingwang.org/blog/2015-04-26-using-python-3-with-emacs-jedi.html
+;; > mkdir -p ~/.emacs.d/.python-environments
+;; > virtualenv -p /usr/bin/python3 ~/.emacs.d/.python-environments/jedi
+;; If you feel like installing the server with 'M-x jedi:install-server', also do the following
+;; > ~/.emacs.d/.python-environments/jedi/bin/pip install --upgrade ~/.emacs.d/elpa/jedi-core-20160709.722/
+
 (use-package jedi
   :ensure t
   :if (system-is-linux)
