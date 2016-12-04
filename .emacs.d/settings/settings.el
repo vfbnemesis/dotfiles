@@ -700,7 +700,22 @@ narrowed."
   :mode ("\\.rs\\'" . rust-mode)
   :config
   (setq tab-width 4)
-  (setq rust-indent-offset 4))
+  (setq rust-indent-offset 4)
+  (add-hook 'rust-mode-hook #'racer-mode)
+  )
+
+(use-package racer
+  :ensure t
+  :config
+  (setq racer-cmd "/home/bercut/.cargo/bin/racer")
+  (setq racer-rust-src-path "/home/bercut/rust/rust_src/src")
+  )
+
+(use-package ac-racer
+  :ensure t
+  :config
+  (add-hook 'racer-mode-hook 'ac-racer-setup)
+  )
 
 (use-package markdown-mode
   :ensure t
