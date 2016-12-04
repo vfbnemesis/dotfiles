@@ -694,6 +694,14 @@ narrowed."
     ;; (add-hook 'verilog-mode-hook (lambda () (abbrev-mode t)))
     ))
 
+;; http://reangdblog.blogspot.com/2015/04/emacs-ide-rust.html
+(use-package rust-mode
+  :ensure t
+  :mode ("\\.rs\\'" . rust-mode)
+  :config
+  (setq tab-width 4)
+  (setq rust-indent-offset 4))
+
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode)
@@ -745,7 +753,6 @@ narrowed."
 ;; > virtualenv -p /usr/bin/python3 ~/.emacs.d/.python-environments/jedi
 ;; If you feel like installing the server with 'M-x jedi:install-server', also do the following
 ;; > ~/.emacs.d/.python-environments/jedi/bin/pip install --upgrade ~/.emacs.d/elpa/jedi-core-20160709.722/
-
 (use-package jedi
   :ensure t
   :if (system-is-linux)
