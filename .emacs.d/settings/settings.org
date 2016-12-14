@@ -728,20 +728,6 @@ _v_: visual-line-mode   %`visual-line-mode
       ("t" toggle-truncate-lines nil)
       ("v" visual-line-mode)
       ("q" nil "quit" :color blue))
-
-    (defhydra my/hydra-bookmark (:color blue
-                                 :hint nil)
-      "
-_s_: set bookmark
-_j_: jump bookmark
-_l_: list bookmark
-_w_: write bookmark to file
-"
-      ("s" bookmark-set)
-      ("j" bookmark-jump)
-      ("l" list-bookmarks)
-      ("w" bookmark-write)
-      ("q" nil "quit"))
     ))
 
 #+END_SRC
@@ -760,6 +746,93 @@ _w_: write bookmark to file
     (key-chord-define-global "tt" 'my/hydra-toggle/body)
     (key-chord-define-global "bb" 'my/hydra-bookmark/body)
     ))
+#+END_SRC
+
+
+* bookmarks
+** bm plugin
+   This package provides visible, buffer local, bookmarks and the ability to
+   jump forward and backward to the next bookmark. https://github.com/joodland/bm
+#+BEGIN_SRC emacs-lisp
+  (use-package bm
+    :ensure t
+    :init
+    ;; restore on load (even before you require bm)
+    (setq bm-restore-repository-on-load t)
+    ;; :bind (:map my-mode-map
+    ;;             ("C-c b" . hydra-bm/body))
+    :config
+    ;; Allow cross-buffer 'next'
+    (setq bm-cycle-all-buffers t)
+    ;; where to store persistant files
+    (setq bm-repository-file "~/.emacs.d/bm-repository")
+    ;; save bookmarks
+    (setq-default bm-buffer-persistence t)
+    ;; Loading the repository from file when on start up.
+    (add-hook' after-init-hook 'bm-repository-load)
+    ;; Restoring bookmarks when on file find.
+    (add-hook 'find-file-hooks 'bm-buffer-restore)
+    ;; Saving bookmarks
+    (add-hook 'kill-buffer-hook #'bm-buffer-save)
+    ;; Saving the repository to file when on exit.
+    ;; kill-buffer-hook is not called when Emacs is killed, so we
+    ;; must save all bookmarks first.
+    (add-hook 'kill-emacs-hook #'(lambda nil
+                                   (bm-buffer-save-all)
+                                   (bm-repository-save)))
+    ;; The `after-save-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state.
+    (add-hook 'after-save-hook #'bm-buffer-save)
+    ;; Restoring bookmarks
+    (add-hook 'find-file-hooks   #'bm-buffer-restore)
+    (add-hook 'after-revert-hook #'bm-buffer-restore)
+    ;; The `after-revert-hook' is not necessary to use to achieve persistence,
+    ;; but it makes the bookmark data in repository more in sync with the file
+    ;; state. This hook might cause trouble when using packages
+    ;; that automatically reverts the buffer (like vc after a check-in).
+    ;; This can easily be avoided if the package provides a hook that is
+    ;; called before the buffer is reverted (like `vc-before-checkin-hook').
+    ;; Then new bookmarks can be saved before the buffer is reverted.
+    ;; Make sure bookmarks is saved before check-in (and revert-buffer)
+    (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+    )
+#+END_SRC
+
+** bookmarks menu
+   меню для радоты с закладками (как встроенными в емакс, так ис отдельным
+   плагином bm. Для вызова меню используется сочетание клавиш "bb" (настройку
+   ищи в key-chord).
+#+BEGIN_SRC emacs-lisp
+  (defhydra my/hydra-bookmark (:color blue
+                               :hint nil)
+    "
+  ^bm-plugin^                        ^bm-navigation^                     ^bookmark (classic)^
+  ^^^^^^----------------------------------------------------------------------------------------------
+  _m_: toggle bm                     _n_: next bm                        _s_: set bookmark
+  _M_: toggle bm                     _N_: next bm (in linfo order)       _j_: jump bookmark
+  _x_: remove all bm from cur. buf.  _p_: previous bm                    _l_: list bookmark
+  _X_: remove all bm from all buf.   _P_: previous bm (in linfo order)   _w_: write bookmark to file
+  "
+
+
+    ("m"   bm-toggle)
+    ("M"   bm-toggle)
+    ("n"   bm-common-next :color red)
+    ("N"   bm-lifo-next :color red)
+    ("p"   bm-common-previous :color red)
+    ("P"   bm-lifo-previous :color red)
+    ("x"   bm-remove-all-current-buffer)
+    ("X"   bm-remove-all-all-buffers)
+
+    ("s" bookmark-set)
+    ("j" bookmark-jump)
+    ("l" list-bookmarks)
+    ("w" bookmark-write)
+
+    ("RET" nil "cancel")
+    ("q" nil "quit")
+    )
 #+END_SRC
 
 
@@ -840,6 +913,18 @@ _w_: write bookmark to file
 #+END_SRC
 
 
+* markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode)
+    :mode (("\\.markdown\\'" . markdown-mode)
+           ("\\.md\\'" . markdown-mode))
+    :init (setq markdown-command "markdown")
+    )
+#+END_SRC
+
+
 * my config
 #+BEGIN_SRC emacs-lisp
 ;; номера строк (слева)
@@ -905,14 +990,6 @@ _w_: write bookmark to file
      '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
   ))
 
-(use-package markdown-mode
-  :ensure t
-  :commands (markdown-mode)
-  :mode (("\\.markdown\\'" . markdown-mode)
-         ("\\.md\\'" . markdown-mode))
-  :init (setq markdown-command "markdown")
-  )
-
 (use-package which-key
   :ensure t
   :config
@@ -922,74 +999,6 @@ _w_: write bookmark to file
 (use-package projectile
   :ensure t
   )
-
-;;; bm
-;; https://github.com/joodland/bm
-(use-package bm
-         :ensure t
-         :init
-         ;; restore on load (even before you require bm)
-         (setq bm-restore-repository-on-load t)
-         :bind (:map my-mode-map
-                     ("C-c b" . hydra-bm/body))
-         :config
-         ;; Allow cross-buffer 'next'
-         (setq bm-cycle-all-buffers t)
-         ;; where to store persistant files
-         (setq bm-repository-file "~/.emacs.d/bm-repository")
-         ;; save bookmarks
-         (setq-default bm-buffer-persistence t)
-         ;; Loading the repository from file when on start up.
-         (add-hook' after-init-hook 'bm-repository-load)
-         ;; Restoring bookmarks when on file find.
-         (add-hook 'find-file-hooks 'bm-buffer-restore)
-         ;; Saving bookmarks
-         (add-hook 'kill-buffer-hook #'bm-buffer-save)
-         ;; Saving the repository to file when on exit.
-         ;; kill-buffer-hook is not called when Emacs is killed, so we
-         ;; must save all bookmarks first.
-         (add-hook 'kill-emacs-hook #'(lambda nil
-                                          (bm-buffer-save-all)
-                                          (bm-repository-save)))
-         ;; The `after-save-hook' is not necessary to use to achieve persistence,
-         ;; but it makes the bookmark data in repository more in sync with the file
-         ;; state.
-         (add-hook 'after-save-hook #'bm-buffer-save)
-         ;; Restoring bookmarks
-         (add-hook 'find-file-hooks   #'bm-buffer-restore)
-         (add-hook 'after-revert-hook #'bm-buffer-restore)
-         ;; The `after-revert-hook' is not necessary to use to achieve persistence,
-         ;; but it makes the bookmark data in repository more in sync with the file
-         ;; state. This hook might cause trouble when using packages
-         ;; that automatically reverts the buffer (like vc after a check-in).
-         ;; This can easily be avoided if the package provides a hook that is
-         ;; called before the buffer is reverted (like `vc-before-checkin-hook').
-         ;; Then new bookmarks can be saved before the buffer is reverted.
-         ;; Make sure bookmarks is saved before check-in (and revert-buffer)
-         (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-         (defhydra hydra-bm (:color pink
-                             :hint nil
-                             :body-pre (when (not (use-region-p)) (push-mark)))
-           "
-Bookmark _n_ext (_N_ in lifo order)            toggle book_m_ark        ^^_/_ bm lines matching regexp                          toggle per_s_istence
-         _p_revious (_P_ in lifo order)        _a_nnotate               _x_/_X_ remove all bm from current/all buffer(s)        _r_eturn to from where you started
-    "
-           ("m"   bm-toggle)
-           ("M"   bm-toggle :color blue)
-           ("a"   bm-bookmark-annotate :color blue)
-           ("n"   bm-common-next)
-           ("N"   bm-lifo-next)
-           ("p"   bm-common-previous)
-           ("P"   bm-lifo-previous)
-           ("/"   modi/bm-bookmark-regexp :color blue)
-           ("s"   bm-toggle-buffer-persistence)
-           ("x"   bm-remove-all-current-buffer :color blue)
-           ("X"   bm-remove-all-all-buffers :color blue)
-           ("r"   pop-to-mark-command :color blue)
-           ("RET" nil "cancel" :color blue)
-           ("q" nil "cancel" :color blue))
-         )
-
 ;; ----------------------------------------------------------------------------
 
 #+END_SRC
