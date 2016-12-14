@@ -444,6 +444,22 @@ after `multiple-cursors-mode' is quit.")
     (relative-line-numbers-mode 'toggle))
 #+END_SRC
 
+  Show line numbers temporarily, while prompting for the line number input. [[https://gist.github.com/magnars/3292872][src]]
+#+BEGIN_SRC emacs-lisp
+  (defun goto-line-with-feedback (&optional line)
+    "Show line numbers temporarily, while prompting for the line number input"
+    (interactive "P")
+    (if line
+        (goto-line line)
+      (unwind-protect
+          (progn
+            (linum-mode 1)
+            (goto-line (read-number "Goto line: ")))
+        (linum-mode -1))))
+
+  (global-set-key [remap goto-line] 'goto-line-with-feedback)
+#+END_SRC
+
 
 * localization
 #+BEGIN_SRC emacs-lisp
