@@ -85,30 +85,6 @@
 (column-number-mode t) ; показать номер столбца в mode-line
 (setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
 (display-time-mode t) ; показывать часы в mode-line
-
-;; --- быстрый доступ к файлам (C-x r j)---------------------------------------
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
-
-(defvar my/refile-map (make-sparse-keymap))
-
-(defmacro my/defshortcut (key file)
-  `(progn
-     (set-register ,key (cons 'file ,file))
-     (define-key my/refile-map
-       (char-to-string ,key)
-       (lambda (prefix)
-         (interactive "p")
-         (let ((org-refile-targets '(((,file) :maxlevel . 6)))
-               (current-prefix-arg (or current-prefix-arg '(4))))
-           (call-interactively 'org-refile))))))
-
-(my/defshortcut ?b "~/org/gtd/binp.org")
-(my/defshortcut ?p "~/org/gtd/personal.org")
-(my/defshortcut ?e "~/org/text/emacs/emacs.org")
-(my/defshortcut ?s "~/.emacs.d/settings/settings.org")
-(my/defshortcut ?l "~/org/text/bookmarks.org")
-(my/defshortcut ?o "~/org")
-
 #+END_SRC
 
 
@@ -369,6 +345,71 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
+* Line Numbers
+  источник: [[https://ogbe.net/emacsconfig.html]]
+  First, we customize the format that line-numbers are displayed with. We also
+  want the current line to be highlighted.
+#+BEGIN_SRC emacs-lisp
+  (use-package linum
+    :defer 1
+    :config
+    (set-face-attribute 'linum nil
+                        :background (face-attribute 'default :background)
+                        :foreground (face-attribute 'font-lock-comment-face :foreground))
+    (defface linum-current-line-face
+      `((t :background "gray30" :foreground "gold"))
+      "Face for the currently active Line number")
+    (defvar my-linum-current-line-number 0)
+    (defun get-linum-format-string ()
+      (setq-local my-linum-format-string
+                  (let ((w (length (number-to-string
+                                    (count-lines (point-min) (point-max))))))
+                    (concat " %" (number-to-string w) "d "))))
+    (add-hook 'linum-before-numbering-hook 'get-linum-format-string)
+    (defun my-linum-format (line-number)
+      (propertize (format my-linum-format-string line-number) 'face
+                  (if (eq line-number my-linum-current-line-number)
+                      'linum-current-line-face
+                    'linum)))
+    (setq linum-format 'my-linum-format)
+    (defadvice linum-update (around my-linum-update)
+      (let ((my-linum-current-line-number (line-number-at-pos)))
+        ad-do-it))
+    (ad-activate 'linum-update)
+    )
+#+END_SRC
+
+  Next, we configure the looks of relative-line-numbers-mode.
+#+BEGIN_SRC emacs-lisp
+  (use-package relative-line-numbers
+    :ensure t
+    :config
+    (set-face-attribute 'relative-line-numbers-current-line nil
+                        :background "gray30" :foreground "gold")
+    (setq relative-line-numbers-motion-function 'forward-visible-line)
+    (setq relative-line-numbers-format
+          '(lambda (offset)
+             (concat " " (number-to-string (abs offset)) " ")))
+    )
+#+END_SRC
+
+  Toggle line numbers (num) or relative line numbers (rnum) in a safe manner by
+  turning the other off in case it is on.
+#+BEGIN_SRC emacs-lisp
+  (defun num ()
+    (interactive)
+    (if (bound-and-true-p relative-line-numbers-mode)
+        (relative-line-numbers-mode 'toggle))
+    (linum-mode 'toggle))
+
+  (defun rnum ()
+    (interactive)
+    (if (bound-and-true-p linum-mode)
+        (linum-mode 'toggle))
+    (relative-line-numbers-mode 'toggle))
+#+END_SRC
+
+
 * localization
 #+BEGIN_SRC emacs-lisp
 ;; --- calendar mode localization ---------------------------------------------
@@ -408,37 +449,177 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
-* file navigation
+* navigation
+** bs (built-in)
+   buffer show файлы + scratch
 #+BEGIN_SRC emacs-lisp
-;; buffer show файлы + scratch
-;; built-in
-(require 'bs)
-(setq bs-configurations
-'(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)))
+  (require 'bs)
+  (setq bs-configurations
+  '(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)))
+  (define-key my-mode-map (kbd "<f2>") 'bs-show)
+#+END_SRC
 
-(define-key my-mode-map (kbd "<f2>") 'bs-show)
+** sr-speedbar
+   браузер по файловой системе
+#+BEGIN_SRC emacs-lisp
+  (use-package sr-speedbar
+    :ensure t
+    :bind (("<f12>" . sr-speedbar-toggle))
+    :config
+    (progn
+      (custom-set-variables
+       '(speedbar-show-unknown-files t)) ;; отображение всех файлов
+      (setq speedbar-use-images nil)
+      ))
+#+END_SRC
 
-(use-package sr-speedbar
-  ;; браузер по файловой системе
-  :ensure t
-  :bind (("<f12>" . sr-speedbar-toggle))
-  :config
-  (progn
-    (custom-set-variables
-     '(speedbar-show-unknown-files t)) ;; отображение всех файлов
-    (setq speedbar-use-images nil)
-    ))
+** recetf
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-x C-r" . recentf-open-files))
+    :config
+    (progn
+      (setq recent-max-saved-items 200
+            recent-max-menu-items 15)
+      (recentf-mode t)
+      ))
+#+END_SRC
 
-(use-package recentf
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-x C-r" . recentf-open-files))
-  :config
-  (progn
-    (setq recent-max-saved-items 200
-          recent-max-menu-items 15)
-    (recentf-mode t)
-    ))
+** ace-window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-c w" . ace-window))
+    :config
+    (progn
+      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+      (setq aw-dispatch-always t)
+
+      (defvar aw-dispatch-alist
+        '((?x aw-delete-window " Ace - Delete Window")
+          (?m aw-swap-window " Ace - Swap Window")
+          (?n aw-flip-window)
+          (?v aw-split-window-vert " Ace - Split Vert Window")
+          (?b aw-split-window-horz " Ace - Split Horz Window")
+          (?i delete-other-windows " Ace - Maximize Window")
+          (?o delete-other-windows))
+        "List of actions for `aw-dispatch-default'.")
+      ))
+#+END_SRC
+
+** avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-c SPC" . avy-goto-word-or-subword-1)
+                ("C-c l" . avy-goto-line))
+    )
+#+END_SRC
+
+** hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t
+    ;; :bind (:map my-mode-map
+    ;;             ("<f5>" . my/window-movement/body)
+    ;;             ("<f6>" . my/hydra-toggle/body))
+    :config
+    (progn
+      ;; --------------------------------------------------------------------------
+      (defhydra my/window-movement (:color blue
+                                           :hint nil)
+        "
+        ^Winmovie^       ^ace-window^             ^Split^                  ^text size^
+        ^^^^^^-----------------------------------------------------------------------
+         _<left>_        _a_: ace-window          _2_: split-window-below  _j_: in
+         _<right>_       _s_: swap ace-window     _3_: split-window-right  _k_: out
+         _<up>_          _d_: delete ace window   ^ ^                      _0_: reset
+         _<down>_        _i_: ace maximize        ^ ^                      ^ ^
+        "
+        ("<left>" windmove-left)
+        ("<right>" windmove-right)
+        ("<down>" windmove-down)
+        ("<up>" windmove-up)
+
+        ("a" ace-window)
+        ("s" ace-swap-window)
+        ("d" ace-delete-window)
+        ("i" ace-maximize-window)
+
+        ("2" split-window-below nil)
+        ("3" split-window-right nil)
+
+        ("j" text-scale-increase :color red)
+        ("k" text-scale-decrease :color red)
+        ("0" (text-scale-set 0))
+
+        ("q" nil "quit" :color blue))
+      ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defhydra my/hydra-toggle (:hint nil
+                                   :color blue)
+    "
+  _n_: line num               _a_: abbrev-mode        %`abbrev-mode
+  _r_: relative line num      _f_: auto-fill-mode     %`auto-fill-function
+  ^ ^                         _t_: truncate-lines     %`truncate-lines
+  ^ ^                         _w_: whitespace-mode    %`whitespace-mode
+  ^ ^                         _v_: visual-line-mode   %`visual-line-mode
+  "
+    ("a" abbrev-mode nil)
+    ("w" whitespace-mode nil)
+    ("f" auto-fill-mode nil)
+    ("t" toggle-truncate-lines nil)
+    ("v" visual-line-mode)
+
+    ("n" (num))
+    ("r" (rnum))
+    ("q" nil "quit"))
+#+END_SRC
+
+** key-chord
+#+BEGIN_SRC emacs-lisp
+  (use-package key-chord
+    :ensure t
+    :init
+    (progn
+      ;; (fset 'key-chord-define 'my/key-chord-define)
+      (setq key-chord-one-key-delay 0.16)
+      (key-chord-mode 1)
+      (key-chord-define-global "yy" 'my/window-movement/body)
+      (key-chord-define-global "tt" 'my/hydra-toggle/body)
+      (key-chord-define-global "bb" 'my/hydra-bookmark/body)
+      ))
+#+END_SRC
+
+** быстрый доступ к файлам
+   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
+   Для быстрого доступа к файлам используются регистры. (C-x r j)
+#+BEGIN_SRC emacs-lisp
+  (defvar my/refile-map (make-sparse-keymap))
+
+  (defmacro my/defshortcut (key file)
+    `(progn
+       (set-register ,key (cons 'file ,file))
+       (define-key my/refile-map
+         (char-to-string ,key)
+         (lambda (prefix)
+           (interactive "p")
+           (let ((org-refile-targets '(((,file) :maxlevel . 6)))
+                 (current-prefix-arg (or current-prefix-arg '(4))))
+             (call-interactively 'org-refile))))))
+
+  (my/defshortcut ?b "~/org/gtd/binp.org")
+  (my/defshortcut ?p "~/org/gtd/personal.org")
+  (my/defshortcut ?e "~/org/text/emacs/emacs.org")
+  (my/defshortcut ?s "~/.emacs.d/settings/settings.org")
+  (my/defshortcut ?l "~/org/text/bookmarks.org")
+  (my/defshortcut ?o "~/org")
 #+END_SRC
 
 
@@ -675,80 +856,6 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
-* hydra
-#+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :ensure t
-  ;; :bind (:map my-mode-map
-  ;;             ("<f5>" . my/window-movement/body)
-  ;;             ("<f6>" . my/hydra-toggle/body))
-  :config
-  (progn
-    ;; --------------------------------------------------------------------------
-    (defhydra my/window-movement (:color blue
-                                  :hint nil)
-      "
-^Winmovie^       ^ace-window^             ^Split^                  ^text size^
-^^^^^^-----------------------------------------------------------------------
- _<left>_        _a_: ace-window          _2_: split-window-below  _j_: in
- _<right>_       _s_: swap ace-window     _3_: split-window-right  _k_: out
- _<up>_          _d_: delete ace window   ^ ^                      _0_: reset
- _<down>_        _i_: ace maximize        ^ ^                      ^ ^
-"
-      ("<left>" windmove-left)
-      ("<right>" windmove-right)
-      ("<down>" windmove-down)
-      ("<up>" windmove-up)
-
-      ("a" ace-window)
-      ("s" ace-swap-window)
-      ("d" ace-delete-window)
-      ("i" ace-maximize-window)
-
-      ("2" split-window-below nil)
-      ("3" split-window-right nil)
-
-      ("j" text-scale-increase :color red)
-      ("k" text-scale-decrease :color red)
-      ("0" (text-scale-set 0))
-
-      ("q" nil "quit" :color blue))
-
-    (defhydra my/hydra-toggle (:hint nil)
-      "
-_a_: abbrev-mode        %`abbrev-mode
-_f_: auto-fill-mode     %`auto-fill-function
-_t_: truncate-lines     %`truncate-lines
-_w_: whitespace-mode    %`whitespace-mode
-_v_: visual-line-mode   %`visual-line-mode
-"
-      ("a" abbrev-mode nil)
-      ("w" whitespace-mode nil)
-      ("f" auto-fill-mode nil)
-      ("t" toggle-truncate-lines nil)
-      ("v" visual-line-mode)
-      ("q" nil "quit" :color blue))
-    ))
-
-#+END_SRC
-
-
-* key-chord
-#+BEGIN_SRC emacs-lisp
-(use-package key-chord
-  :ensure t
-  :init
-  (progn
-    ;; (fset 'key-chord-define 'my/key-chord-define)
-    (setq key-chord-one-key-delay 0.16)
-    (key-chord-mode 1)
-    (key-chord-define-global "yy" 'my/window-movement/body)
-    (key-chord-define-global "tt" 'my/hydra-toggle/body)
-    (key-chord-define-global "bb" 'my/hydra-bookmark/body)
-    ))
-#+END_SRC
-
-
 * bookmarks
 ** bm plugin
    This package provides visible, buffer local, bookmarks and the ability to
@@ -947,33 +1054,6 @@ _v_: visual-line-mode   %`visual-line-mode
     (ac-config-default)
     (global-auto-complete-mode t)
     ))
-
-(use-package ace-window
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-c w" . ace-window))
-  :config
-  (progn
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-    (setq aw-dispatch-always t)
-
-    (defvar aw-dispatch-alist
-      '((?x aw-delete-window " Ace - Delete Window")
-        (?m aw-swap-window " Ace - Swap Window")
-        (?n aw-flip-window)
-        (?v aw-split-window-vert " Ace - Split Vert Window")
-        (?b aw-split-window-horz " Ace - Split Horz Window")
-        (?i delete-other-windows " Ace - Maximize Window")
-        (?o delete-other-windows))
-      "List of actions for `aw-dispatch-default'.")
-    ))
-
-(use-package avy
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-c SPC" . avy-goto-word-or-subword-1)
-              ("C-c l" . avy-goto-line))
-  )
 
 (use-package powerline
   :ensure t
