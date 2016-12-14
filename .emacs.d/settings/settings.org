@@ -345,13 +345,48 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
+* themes
+#+BEGIN_SRC emacs-lisp
+;; --- Cycling of Color Themes ------------------------------------------------
+;; сайт с темами: https://emacsthemes.com/
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/plugins")
+
+(setq my-color-themes (list 'deeper-blue
+                            'wheatgrass
+                            'dark-laptop))
+
+(defun my-theme-set-default () ; Set the first row
+      (interactive)
+      (setq theme-current my-color-themes)
+      (load-theme (car theme-current) t))
+
+(defun my-describe-theme () ; Show the current theme
+  (interactive)
+  (message "%s" (car theme-current)))
+
+; Set the next theme (fixed by Chris Webber - thanks)
+(defun my-theme-cycle ()
+  (interactive)
+  (setq theme-current (cdr theme-current))
+  (if (null theme-current)
+      (setq theme-current my-color-themes))
+  (load-theme (car theme-current) t)
+  (message "%S" (car theme-current)))
+
+(setq theme-current my-color-themes)
+(my-theme-set-default)
+
+(global-set-key (kbd "<f7>") 'my-theme-cycle)
+#+END_SRC
+
+
 * Line Numbers
   источник: [[https://ogbe.net/emacsconfig.html]]
   First, we customize the format that line-numbers are displayed with. We also
   want the current line to be highlighted.
 #+BEGIN_SRC emacs-lisp
   (use-package linum
-    :defer 1
     :config
     (set-face-attribute 'linum nil
                         :background (face-attribute 'default :background)
@@ -731,42 +766,6 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
-* themes
-#+BEGIN_SRC emacs-lisp
-;; --- Cycling of Color Themes ------------------------------------------------
-;; сайт с темами: https://emacsthemes.com/
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/plugins")
-
-(setq my-color-themes (list 'deeper-blue
-                            'wheatgrass
-                            'dark-laptop))
-
-(defun my-theme-set-default () ; Set the first row
-      (interactive)
-      (setq theme-current my-color-themes)
-      (load-theme (car theme-current) t))
-
-(defun my-describe-theme () ; Show the current theme
-  (interactive)
-  (message "%s" (car theme-current)))
-
-; Set the next theme (fixed by Chris Webber - thanks)
-(defun my-theme-cycle ()
-  (interactive)
-  (setq theme-current (cdr theme-current))
-  (if (null theme-current)
-      (setq theme-current my-color-themes))
-  (load-theme (car theme-current) t)
-  (message "%S" (car theme-current)))
-
-(setq theme-current my-color-themes)
-(my-theme-set-default)
-
-(global-set-key (kbd "<f7>") 'my-theme-cycle)
-#+END_SRC
-
-
 * edit code
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
@@ -1036,8 +1035,8 @@ after `multiple-cursors-mode' is quit.")
 #+BEGIN_SRC emacs-lisp
 ;; номера строк (слева)
 ;; http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el
-(require 'linum+)
-(setq linum-format "%d ")
+;;(require 'linum+)
+;;(setq linum-format "%d ")
 ;; (global-linum-mode 1)
 
 (use-package yasnippet
