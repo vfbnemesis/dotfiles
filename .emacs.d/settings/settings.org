@@ -461,6 +461,26 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 
+* Mode Line
+** powerline
+#+BEGIN_SRC emacs-lisp
+  (use-package powerline
+    :ensure t
+    :config
+    (progn
+      (powerline-default-theme)
+      (setq powerline-arrow-shape 'arrow)   ;; the default
+      ;; (setq powerline-arrow-shape 'curve)   ;; give your mode-line curves
+      ;; (setq powerline-arrow-shape 'arrow14) ;; best for small fonts
+      (setq powerline-color1 "grey22")
+      (setq powerline-color2 "grey40")
+      (custom-set-faces
+       '(mode-line ((t (:foreground "#030303" :background "#bdbdbd" :box nil))))
+       '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
+      ))
+#+END_SRC
+
+
 * localization
 #+BEGIN_SRC emacs-lisp
 ;; --- calendar mode localization ---------------------------------------------
@@ -1069,21 +1089,6 @@ after `multiple-cursors-mode' is quit.")
     (ac-config-default)
     (global-auto-complete-mode t)
     ))
-
-(use-package powerline
-  :ensure t
-  :config
-  (progn
-    (powerline-default-theme)
-    (setq powerline-arrow-shape 'arrow)   ;; the default
-    ;; (setq powerline-arrow-shape 'curve)   ;; give your mode-line curves
-    ;; (setq powerline-arrow-shape 'arrow14) ;; best for small fonts
-    (setq powerline-color1 "grey22")
-    (setq powerline-color2 "grey40")
-    (custom-set-faces
-     '(mode-line ((t (:foreground "#030303" :background "#bdbdbd" :box nil))))
-     '(mode-line-inactive ((t (:foreground "#f9f9f9" :background "#666666" :box nil)))))
-  ))
 
 (use-package which-key
   :ensure t
