@@ -595,51 +595,48 @@ after `multiple-cursors-mode' is quit.")
 #+BEGIN_SRC emacs-lisp
   (use-package hydra
     :ensure t
-    ;; :bind (:map my-mode-map
-    ;;             ("<f5>" . my/window-movement/body)
-    ;;             ("<f6>" . my/hydra-toggle/body))
-    :config
-    (progn
-      ;; --------------------------------------------------------------------------
-      (defhydra my/window-movement (:color blue
-                                           :hint nil)
-        "
-        ^Winmovie^       ^ace-window^             ^Split^                  ^text size^
-        ^^^^^^-----------------------------------------------------------------------
-         _<left>_        _a_: ace-window          _2_: split-window-below  _j_: in
-         _<right>_       _s_: swap ace-window     _3_: split-window-right  _k_: out
-         _<up>_          _d_: delete ace window   ^ ^                      _0_: reset
-         _<down>_        _i_: ace maximize        ^ ^                      ^ ^
-        "
-        ("<left>" windmove-left)
-        ("<right>" windmove-right)
-        ("<down>" windmove-down)
-        ("<up>" windmove-up)
+    )
+#+END_SRC
 
-        ("a" ace-window)
-        ("s" ace-swap-window)
-        ("d" ace-delete-window)
-        ("i" ace-maximize-window)
+#+BEGIN_SRC emacs-lisp
+  (defhydra my/window-movement (:color blue
+                                       :hint nil)
+    "
+  ^Winmovie^       ^ace-window^             ^Split^                  ^text size^
+  ^^^^^^-----------------------------------------------------------------------
+  _<left>_        _a_: ace-window          _2_: split-window-below  _j_: in
+  _<right>_       _s_: swap ace-window     _3_: split-window-right  _k_: out
+  _<up>_          _d_: delete ace window   ^ ^                      _0_: reset
+  _<down>_        _i_: ace maximize        ^ ^                      ^ ^
+  "
+    ("<left>" windmove-left)
+    ("<right>" windmove-right)
+    ("<down>" windmove-down)
+    ("<up>" windmove-up)
 
-        ("2" split-window-below nil)
-        ("3" split-window-right nil)
+    ("a" ace-window)
+    ("s" ace-swap-window)
+    ("d" ace-delete-window)
+    ("i" ace-maximize-window)
 
-        ("j" text-scale-increase :color red)
-        ("k" text-scale-decrease :color red)
-        ("0" (text-scale-set 0))
+    ("2" split-window-below nil)
+    ("3" split-window-right nil)
 
-        ("q" nil "quit" :color blue))
-      ))
+    ("j" text-scale-increase :color red)
+    ("k" text-scale-decrease :color red)
+    ("0" (text-scale-set 0))
+
+    ("q" nil "quit" :color blue))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (defhydra my/hydra-toggle (:hint nil
                                    :color blue)
-    "
+  "
   _n_: line num               _a_: abbrev-mode        %`abbrev-mode
   _r_: relative line num      _f_: auto-fill-mode     %`auto-fill-function
-  ^ ^                         _t_: truncate-lines     %`truncate-lines
-  ^ ^                         _w_: whitespace-mode    %`whitespace-mode
+  _c_: color identifier       _t_: truncate-lines     %`truncate-lines
+  _b_: rainbow identifier     _w_: whitespace-mode    %`whitespace-mode
   ^ ^                         _v_: visual-line-mode   %`visual-line-mode
   "
     ("a" abbrev-mode nil)
@@ -650,6 +647,10 @@ after `multiple-cursors-mode' is quit.")
 
     ("n" (num))
     ("r" (rnum))
+
+    ("c" color-identifiers-mode)
+    ("b" rainbow-identifiers-mode)
+
     ("q" nil "quit"))
 #+END_SRC
 
@@ -803,49 +804,111 @@ after `multiple-cursors-mode' is quit.")
 
 
 * edit code
+** flycheck
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-  :if (system-is-linux)
-  :init
-  (setq flycheck-python-pylint-executable "pylint3")
-  (global-flycheck-mode t))
+  (use-package flycheck
+    :ensure t
+    :if (system-is-linux)
+    :init
+    (setq flycheck-python-pylint-executable "pylint3")
+    (global-flycheck-mode t))
+#+END_SRC
 
-(use-package iedit
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-c ;" . iedit-mode))
-  )
+** iedit
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-c ;" . iedit-mode))
+    )
+#+END_SRC
 
-(use-package expand-region
-  :ensure t
-  :bind (("C-=" . er/expand-region))
-  )
+** expand-region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-=" . er/expand-region))
+    )
+#+END_SRC
 
-(use-package whitespace
-  :ensure t
-  )
+** whitespace
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :ensure t
+    )
+#+END_SRC
 
-(use-package indent-guide
-  :ensure t
-  :config
-  (set-face-foreground 'indent-guide-face "cyan")
-  (add-hook 'python-mode-hook 'indent-guide-mode))
+** indent-guide
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide
+    :ensure t
+    :config
+    (set-face-foreground 'indent-guide-face "cyan")
+    (add-hook 'python-mode-hook 'indent-guide-mode))
+#+END_SRC
 
-(use-package highlight-symbol
-  :ensure t
-  :bind (:map my-mode-map
-              ("<f5>" . highlight-symbol)
-              ("C-<f5>" . highlight-symbol-next)
-              ("S-<f5>" . highlight-symbol-prev)
-              ("M-<f5>" . highlight-symbol-query-replace))
-  )
+** highlight-indentation
+   https://github.com/antonj/Highlight-Indentation-for-Emacs Provides two minor
+   modes `highlight-indentation-mode' and
+   `highlight-indentation-current-column-mode'.
+       * `highlight-indentation-mode' displays guidelines
+         indentation (space indentation only).
+       * `highlight-indentation-current-column-mode' displays guidelines
+         for the current-point indentation (space indentation only).
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indentation
+    :ensure t
+    :config
+    (set-face-background 'highlight-indentation-face "#454945")
+    ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
+    (add-hook 'python-mode-hook 'highlight-indentation-mode))
+#+END_SRC
 
-(use-package volatile-highlights
-  :ensure t
-  :config
-  (volatile-highlights-mode t))
+** highlight-symbol
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-symbol
+    :ensure t
+    :bind (:map my-mode-map
+                ("<f5>" . highlight-symbol)
+                ("C-<f5>" . highlight-symbol-next)
+                ("S-<f5>" . highlight-symbol-prev)
+                ("M-<f5>" . highlight-symbol-query-replace))
+    )
+#+END_SRC
 
+** volatile-highlights
+   highlights changes to the buffer caused by commands such as ‘undo’,
+   ‘yank’/’yank-pop’, etc. The highlight disappears at the next command. The
+   highlighting gives useful visual feedback for what your operation actually
+   changed in the buffer.
+#+BEGIN_SRC emacs-lisp
+  (use-package volatile-highlights
+    :ensure t
+    :config
+    (volatile-highlights-mode t))
+#+END_SRC
+
+** Подсветка переменных в коде
+   [[http://amitp.blogspot.ru/2014/04/emacs-rainbow-identifiers.html][src]]
+   Color Identifiers is a minor mode for Emacs that highlights each source code
+   identifier uniquely based on its name. It is inspired by a post by Evan
+   Brooks.
+
+   Rainbow identifiers mode is an Emacs minor mode providing highlighting of
+   identifiers based on their names. Each identifier gets a color based on a hash
+   of its name.
+#+BEGIN_SRC emacs-lisp
+  (use-package color-identifiers-mode
+    :ensure t
+    )
+
+  (use-package rainbow-identifiers
+    :ensure t
+    )
+#+END_SRC
+
+** other
+#+BEGIN_SRC emacs-lisp
 ;; --- hide/show C block ------------------------------------------------------
 (defvar hs-special-modes-alist
   (mapcar 'purecopy
@@ -874,20 +937,6 @@ after `multiple-cursors-mode' is quit.")
 ;;   (define-globalized-minor-mode
 ;;     global-fci-mode fci-mode (lambda () (fci-mode 1)))
 ;;   (global-fci-mode t))
-
-;; https://github.com/antonj/Highlight-Indentation-for-Emacs
-;; Provides two minor modes `highlight-indentation-mode' and
-;; `highlight-indentation-current-column-mode'.
-;;     * `highlight-indentation-mode' displays guidelines
-;;       indentation (space indentation only).
-;;     * `highlight-indentation-current-column-mode' displays guidelines
-;;       for the current-point indentation (space indentation only).
-;; (use-package highlight-indentation
-;;   :ensure t
-;;   :config
-;;   (set-face-background 'highlight-indentation-face "#454945")
-;;   ;; (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")
-;;   (add-hook 'python-mode-hook 'highlight-indentation-mode))
 #+END_SRC
 
 
@@ -1069,12 +1118,6 @@ after `multiple-cursors-mode' is quit.")
 
 * my config
 #+BEGIN_SRC emacs-lisp
-;; номера строк (слева)
-;; http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el
-;;(require 'linum+)
-;;(setq linum-format "%d ")
-;; (global-linum-mode 1)
-
 (use-package yasnippet
   :ensure t
   :config
