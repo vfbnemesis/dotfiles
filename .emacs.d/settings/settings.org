@@ -637,28 +637,29 @@ after `multiple-cursors-mode' is quit.")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (defhydra my/hydra-toggle (:hint nil
-                                   :color blue)
-  "
-  _n_: line num               _a_: abbrev-mode        %`abbrev-mode
-  _r_: relative line num      _f_: auto-fill-mode     %`auto-fill-function
-  _c_: color identifier       _t_: truncate-lines     %`truncate-lines
-  _b_: rainbow identifier     _w_: whitespace-mode    %`whitespace-mode
-  ^ ^                         _v_: visual-line-mode   %`visual-line-mode
-  "
-    ("a" abbrev-mode nil)
-    ("w" whitespace-mode nil)
-    ("f" auto-fill-mode nil)
-    ("t" toggle-truncate-lines nil)
-    ("v" visual-line-mode)
+    (defhydra my/hydra-toggle (:hint nil
+                                     :color blue)
+    "
+_n_: line num               _a_: abbrev-mode        %`abbrev-mode
+_r_: relative line num      _f_: auto-fill-mode     %`auto-fill-function
+_c_: color identifier       _t_: truncate-lines     %`truncate-lines
+_b_: rainbow identifier     _w_: whitespace-mode    %`whitespace-mode
+_s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
+    "
+      ("a" abbrev-mode nil)
+      ("w" whitespace-mode nil)
+      ("f" auto-fill-mode nil)
+      ("t" toggle-truncate-lines nil)
+      ("v" visual-line-mode)
 
-    ("n" (num))
-    ("r" (rnum))
+      ("n" (num))
+      ("r" (rnum))
 
-    ("c" color-identifiers-mode)
-    ("b" rainbow-identifiers-mode)
+      ("c" color-identifiers-mode)
+      ("b" rainbow-identifiers-mode)
+      ("s" subword-mode)
 
-    ("q" nil "quit"))
+      ("q" nil "quit"))
 #+END_SRC
 
 ** key-chord
