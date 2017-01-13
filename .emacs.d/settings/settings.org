@@ -89,30 +89,32 @@
 
 
 * editing
+** auto-fill-mode
 #+BEGIN_SRC emacs-lisp
-;; --- auto-fill-mode ---------------------------------------------------------
-(setq-default fill-column 80)
+  (setq-default fill-column 80)
 
-(defun auto-fill-mode-on()
-  (interactive)
-  (auto-fill-mode 1))
+  (defun auto-fill-mode-on()
+    (interactive)
+    (auto-fill-mode 1))
 
-(defun comment-auto-fill-only-mode-on()
-  (interactive)
-  (setq-local comment-auto-fill-only-comments t)
-  (auto-fill-mode 1))
+  (defun comment-auto-fill-only-mode-on()
+    (interactive)
+    (setq-local comment-auto-fill-only-comments t)
+    (auto-fill-mode 1))
 
-(define-key my-mode-map (kbd "C-c q") 'auto-fill-mode-on)
+  (define-key my-mode-map (kbd "C-c q") 'auto-fill-mode-on)
 
-;; auto-fill mode for comment only
-(add-hook 'emacs-lisp-mode-hook 'comment-auto-fill-only-mode-on)
+  ;; auto-fill mode for comment only
+  (add-hook 'emacs-lisp-mode-hook 'comment-auto-fill-only-mode-on)
 
-;; auto-fill mode for text
-(add-hook 'text-mode-hook 'auto-fill-mode-on)
-(add-hook 'tex-mode-hook 'auto-fill-mode-on)
-(add-hook 'latex-mode-hook 'auto-fill-mode-on)
+  ;; auto-fill mode for text
+  (add-hook 'text-mode-hook 'auto-fill-mode-on)
+  (add-hook 'tex-mode-hook 'auto-fill-mode-on)
+  (add-hook 'latex-mode-hook 'auto-fill-mode-on)
+#+END_SRC
 
-;; --- move lines -------------------------------------------------------------
+** move lines
+#+BEGIN_SRC emacs-lisp
 (defun move-line (n)
   "Move the current line up or down by N lines."
   (interactive "p")
@@ -135,60 +137,204 @@
   "Move the current line down by N lines."
   (interactive "p")
   (move-line (if (null n) 1 n)))
+#+END_SRC
 
-;; --- Copy/Cut Current Line If No Selection ---------------------------------
-;; http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
-(defun xah-cut-line-or-region ()
-  "Cut current line, or text selection.
-When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
+** Copy/Cut Current Line If No Selection
+   http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
+#+BEGIN_SRC emacs-lisp
+  (defun xah-cut-line-or-region ()
+    "Cut current line, or text selection.
+  When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
 
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2015-06-10"
-  (interactive)
-  (if current-prefix-arg
-      (progn ; not using kill-region because we don't want to include previous kill
-        (kill-new (buffer-string))
-        (delete-region (point-min) (point-max)))
-    (progn (if (use-region-p)
-               (kill-region (region-beginning) (region-end) t)
-             (kill-region (line-beginning-position) (line-beginning-position 2))))))
-
-(defun xah-copy-line-or-region ()
-  "Copy current line, or text selection.
-When called repeatedly, append copy subsequent lines.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
-
-URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
-Version 2016-06-18"
-  (interactive)
-  (let (-p1 -p2)
+  URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+  Version 2015-06-10"
+    (interactive)
     (if current-prefix-arg
-        (setq -p1 (point-min) -p2 (point-max))
-      (if (use-region-p)
-          (setq -p1 (region-beginning) -p2 (region-end))
-        (setq -p1 (line-beginning-position) -p2 (line-end-position))))
-    (if (eq last-command this-command)
+        (progn ; not using kill-region because we don't want to include previous kill
+          (kill-new (buffer-string))
+          (delete-region (point-min) (point-max)))
+      (progn (if (use-region-p)
+                 (kill-region (region-beginning) (region-end) t)
+               (kill-region (line-beginning-position) (line-beginning-position 2))))))
+
+  (defun xah-copy-line-or-region ()
+    "Copy current line, or text selection.
+  When called repeatedly, append copy subsequent lines.
+  When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+
+  URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html'
+  Version 2016-06-18"
+    (interactive)
+    (let (-p1 -p2)
+      (if current-prefix-arg
+          (setq -p1 (point-min) -p2 (point-max))
+        (if (use-region-p)
+            (setq -p1 (region-beginning) -p2 (region-end))
+          (setq -p1 (line-beginning-position) -p2 (line-end-position))))
+      (if (eq last-command this-command)
+          (progn
+            (progn ; hack. exit if there's no more next line
+              (end-of-line)
+              (forward-char)
+              (backward-char))
+            ;; (push-mark (point) "NOMSG" "ACTIVATE")
+            (kill-append "\n" nil)
+            (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
+            (message "Line copy appended"))
         (progn
-          (progn ; hack. exit if there's no more next line
-            (end-of-line)
-            (forward-char)
-            (backward-char))
-          ;; (push-mark (point) "NOMSG" "ACTIVATE")
-          (kill-append "\n" nil)
-          (kill-append (buffer-substring-no-properties (line-beginning-position) (line-end-position)) nil)
-          (message "Line copy appended"))
-      (progn
-        (kill-ring-save -p1 -p2)
-        (if current-prefix-arg
-            (message "Buffer text copied")
-          (message "Text copied"))))
-    (end-of-line)
-    (forward-char)
-    ))
+          (kill-ring-save -p1 -p2)
+          (if current-prefix-arg
+              (message "Buffer text copied")
+            (message "Text copied"))))
+      (end-of-line)
+      (forward-char)
+      ))
 
-(global-set-key (kbd "<f3>") 'xah-cut-line-or-region) ; cut
-(global-set-key (kbd "<f4>") 'xah-copy-line-or-region) ; copy
+  (global-set-key (kbd "<f3>") 'xah-cut-line-or-region) ; cut
+  (global-set-key (kbd "<f4>") 'xah-copy-line-or-region) ; copy
+#+END_SRC
 
+** undo-tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode))
+#+END_SRC
+
+** hungry-delete
+   deletes all the whitespace when you hit backspace or delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :config
+    (progn
+      (setq hungry-delete-chars-to-skip " \t\r\f\v")
+
+      (defun modi/turn-off-hungry-delete-mode ()
+        "Turn off hungry delete mode."
+        (hungry-delete-mode -1))
+
+      ;; Enable `hungry-delete-mode' everywhere ..
+      (global-hungry-delete-mode)
+
+      ;; Except ..
+      ;; `hungry-delete-mode'-loaded backspace does not work in `wdired-mode',
+      ;; i.e. when editing file names in the *Dired* buffer.
+      ;; (add-hook 'wdired-mode-hook #'modi/turn-off-hungry-delete-mode)
+      ))
+#+END_SRC
+
+** multiple-cursors
+   https://github.com/magnars/multiple-cursors.el
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-S-c C-S-c" . mc/edit-lines)
+                ("C->" . mc/mark-next-like-this)
+                ("C-<" . mc/mark-previous-like-this)
+                ("C-c C-<" . mc/mark-all-like-this)
+                ("C-S-<mouse-1>" . mc/add-cursor-on-click))
+    :bind (:map region-bindings-mode-map
+                ("a" . mc/mark-all-like-this)
+                ("p" . mc/mark-previous-like-this)
+                ("n" . mc/mark-next-like-this)
+                ("P" . mc/unmark-previous-like-this)
+                ("N" . mc/unmark-next-like-this)
+                ("[" . mc/cycle-backward)
+                ("]" . mc/cycle-forward)
+                ("m" . mc/mark-more-like-this-extended)
+                ("h" . mc-hide-unmatched-lines-mode)
+                ("\\" . mc/vertical-align-with-space)
+                ("#" . mc/insert-numbers) ; use num prefix to set the starting number
+                ("^" . mc/edit-beginnings-of-lines)
+                ("$" . mc/edit-ends-of-lines))
+    :init
+    (progn
+      ;; (setq mc/list-file (locate-user-emacs-file "mc-lists"))
+
+      ;; Disable the annoying sluggish matching paren blinks for all cursors
+      ;; when you happen to type a ")" or "}" at all cursor locations.
+      (defvar modi/mc-blink-matching-paren--store nil
+        "Internal variable used to restore the value of `blink-matching-paren'
+  after `multiple-cursors-mode' is quit.")
+
+      ;; The `multiple-cursors-mode-enabled-hook' and
+      ;; `multiple-cursors-mode-disabled-hook' are run in the
+      ;; `multiple-cursors-mode' minor mode definition, but they are not declared
+      ;; (not `defvar'd). So do that first before using `add-hook'.
+      (defvar multiple-cursors-mode-enabled-hook nil
+        "Hook that is run after `multiple-cursors-mode' is enabled.")
+      (defvar multiple-cursors-mode-disabled-hook nil
+        "Hook that is run after `multiple-cursors-mode' is disabled.")
+
+      (defun modi/mc-when-enabled ()
+        "Function to be added to `multiple-cursors-mode-enabled-hook'."
+        (setq modi/mc-blink-matching-paren--store blink-matching-paren)
+        (setq blink-matching-paren nil))
+
+      (defun modi/mc-when-disabled ()
+        "Function to be added to `multiple-cursors-mode-disabled-hook'."
+        (setq blink-matching-paren modi/mc-blink-matching-paren--store))
+
+      (add-hook 'multiple-cursors-mode-enabled-hook #'modi/mc-when-enabled)
+      (add-hook 'multiple-cursors-mode-disabled-hook #'modi/mc-when-disabled)
+      ))
+#+END_SRC
+
+** wrap-region
+   https://github.com/rejeep/wrap-region.el Wrap Region is a minor mode for
+   Emacs that wraps a region with punctuations. For "tagged" markup modes, such
+   as HTML and XML, it wraps with tags. Select a region and press any of the
+   following keys: ", ', (, {, [.
+#+BEGIN_SRC emacs-lisp
+  (use-package wrap-region
+    :ensure t
+    :config
+    (progn
+      ;; Enable `wrap-region' in the following major modes
+      (dolist (hook '(emacs-lisp-mode-hook
+                      org-mode-hook
+                      text-mode-hook
+                      markdown-mode-hook))
+        (add-hook hook #'wrap-region-mode))
+
+      ;; Override the default `wrap-region-define-wrappers' function so that it
+      ;; does not bind the "[", "{", "<" keys each time `wrap-region-mode' is
+      ;; enabled in a buffer.
+      (defun wrap-region-define-wrappers ()
+        "Defines defaults wrappers."
+        (mapc
+         (lambda (pair)
+           (apply 'wrap-region-add-wrapper pair))
+         '(("\"" "\"")
+           ("'"  "'")
+           ("("  ")")))
+        ;; Unbind the wrap region pairs which I am very unlikely to us.
+        ;; Doing so allows me to bind those to more useful functions in
+        ;; `region-bindings-mode-map'. See `setup-multiple-cursors.el' file
+        ;; for examples.
+        (wrap-region-unset-key "[")
+        (wrap-region-unset-key "{")
+        (wrap-region-unset-key "<"))
+
+      (wrap-region-add-wrapper "`" "'" nil 'emacs-lisp-mode)
+
+      (wrap-region-add-wrapper "`" "`"   nil '(text-mode markdown-mode))
+      (wrap-region-add-wrapper "**" "**" "*" '(text-mode markdown-mode))
+      (wrap-region-add-wrapper "*" "*"   "/" '(text-mode markdown-mode))
+      (wrap-region-add-wrapper "~~" "~~" "+" '(text-mode markdown-mode))
+
+      (wrap-region-add-wrapper "=" "=" nil 'org-mode)
+      (wrap-region-add-wrapper "*" "*" nil 'org-mode)
+      (wrap-region-add-wrapper "/" "/" nil 'org-mode)
+      (wrap-region-add-wrapper "_" "_" nil 'org-mode)
+      (wrap-region-add-wrapper "+" "+" nil 'org-mode)))
+#+END_SRC
+
+** other
+#+BEGIN_SRC emacs-lisp
 ;; if you're windened, narrow to the region, if you're narrowed, widen
 ;; bound to C-x n
 (defun narrow-or-widen-dwim (p)
@@ -215,133 +361,6 @@ narrowed."
         (t (narrow-to-defun))))
 
 ;; (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
-
-(use-package undo-tree
-  :ensure t
-  :init
-  (global-undo-tree-mode))
-
-;; deletes all the whitespace when you hit backspace or delete
-(use-package hungry-delete
-  :ensure t
-  :config
-  (progn
-    (setq hungry-delete-chars-to-skip " \t\r\f\v")
-
-    (defun modi/turn-off-hungry-delete-mode ()
-      "Turn off hungry delete mode."
-      (hungry-delete-mode -1))
-
-    ;; Enable `hungry-delete-mode' everywhere ..
-    (global-hungry-delete-mode)
-
-    ;; Except ..
-    ;; `hungry-delete-mode'-loaded backspace does not work in `wdired-mode',
-    ;; i.e. when editing file names in the *Dired* buffer.
-    ;; (add-hook 'wdired-mode-hook #'modi/turn-off-hungry-delete-mode)
-    ))
-
-;; https://github.com/magnars/multiple-cursors.el
-(use-package multiple-cursors
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-S-c C-S-c" . mc/edit-lines)
-              ("C->" . mc/mark-next-like-this)
-              ("C-<" . mc/mark-previous-like-this)
-              ("C-c C-<" . mc/mark-all-like-this)
-              ("C-S-<mouse-1>" . mc/add-cursor-on-click))
-  :bind (:map region-bindings-mode-map
-              ("a" . mc/mark-all-like-this)
-              ("p" . mc/mark-previous-like-this)
-              ("n" . mc/mark-next-like-this)
-              ("P" . mc/unmark-previous-like-this)
-              ("N" . mc/unmark-next-like-this)
-              ("[" . mc/cycle-backward)
-              ("]" . mc/cycle-forward)
-              ("m" . mc/mark-more-like-this-extended)
-              ("h" . mc-hide-unmatched-lines-mode)
-              ("\\" . mc/vertical-align-with-space)
-              ("#" . mc/insert-numbers) ; use num prefix to set the starting number
-              ("^" . mc/edit-beginnings-of-lines)
-              ("$" . mc/edit-ends-of-lines))
-  :init
-  (progn
-    ;; (setq mc/list-file (locate-user-emacs-file "mc-lists"))
-
-    ;; Disable the annoying sluggish matching paren blinks for all cursors
-    ;; when you happen to type a ")" or "}" at all cursor locations.
-    (defvar modi/mc-blink-matching-paren--store nil
-      "Internal variable used to restore the value of `blink-matching-paren'
-after `multiple-cursors-mode' is quit.")
-
-    ;; The `multiple-cursors-mode-enabled-hook' and
-    ;; `multiple-cursors-mode-disabled-hook' are run in the
-    ;; `multiple-cursors-mode' minor mode definition, but they are not declared
-    ;; (not `defvar'd). So do that first before using `add-hook'.
-    (defvar multiple-cursors-mode-enabled-hook nil
-      "Hook that is run after `multiple-cursors-mode' is enabled.")
-    (defvar multiple-cursors-mode-disabled-hook nil
-      "Hook that is run after `multiple-cursors-mode' is disabled.")
-
-    (defun modi/mc-when-enabled ()
-      "Function to be added to `multiple-cursors-mode-enabled-hook'."
-      (setq modi/mc-blink-matching-paren--store blink-matching-paren)
-      (setq blink-matching-paren nil))
-
-    (defun modi/mc-when-disabled ()
-      "Function to be added to `multiple-cursors-mode-disabled-hook'."
-      (setq blink-matching-paren modi/mc-blink-matching-paren--store))
-
-    (add-hook 'multiple-cursors-mode-enabled-hook #'modi/mc-when-enabled)
-    (add-hook 'multiple-cursors-mode-disabled-hook #'modi/mc-when-disabled)
-    ))
-
-;; https://github.com/rejeep/wrap-region.el Wrap Region is a minor mode for
-;; Emacs that wraps a region with punctuations. For "tagged" markup modes, such
-;; as HTML and XML, it wraps with tags. Select a region and press any of the
-;; following keys: ", ', (, {, [.
-(use-package wrap-region
-  :ensure t
-  :config
-  (progn
-    ;; Enable `wrap-region' in the following major modes
-    (dolist (hook '(emacs-lisp-mode-hook
-                    org-mode-hook
-                    text-mode-hook
-                    markdown-mode-hook))
-      (add-hook hook #'wrap-region-mode))
-
-    ;; Override the default `wrap-region-define-wrappers' function so that it
-    ;; does not bind the "[", "{", "<" keys each time `wrap-region-mode' is
-    ;; enabled in a buffer.
-    (defun wrap-region-define-wrappers ()
-      "Defines defaults wrappers."
-      (mapc
-       (lambda (pair)
-         (apply 'wrap-region-add-wrapper pair))
-       '(("\"" "\"")
-         ("'"  "'")
-         ("("  ")")))
-      ;; Unbind the wrap region pairs which I am very unlikely to us.
-      ;; Doing so allows me to bind those to more useful functions in
-      ;; `region-bindings-mode-map'. See `setup-multiple-cursors.el' file
-      ;; for examples.
-      (wrap-region-unset-key "[")
-      (wrap-region-unset-key "{")
-      (wrap-region-unset-key "<"))
-
-    (wrap-region-add-wrapper "`" "'" nil 'emacs-lisp-mode)
-
-    (wrap-region-add-wrapper "`" "`"   nil '(text-mode markdown-mode))
-    (wrap-region-add-wrapper "**" "**" "*" '(text-mode markdown-mode))
-    (wrap-region-add-wrapper "*" "*"   "/" '(text-mode markdown-mode))
-    (wrap-region-add-wrapper "~~" "~~" "+" '(text-mode markdown-mode))
-
-    (wrap-region-add-wrapper "=" "=" nil 'org-mode)
-    (wrap-region-add-wrapper "*" "*" nil 'org-mode)
-    (wrap-region-add-wrapper "/" "/" nil 'org-mode)
-    (wrap-region-add-wrapper "_" "_" nil 'org-mode)
-    (wrap-region-add-wrapper "+" "+" nil 'org-mode)))
 #+END_SRC
 
 
@@ -711,8 +730,6 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
     (setq diredp-hide-details-initially-flag nil)
     )
 #+END_SRC
-
-
 
 #+BEGIN_SRC emacs-lisp
   (use-package dired-narrow
@@ -1176,7 +1193,6 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
 
 
 * org
-
 #+BEGIN_SRC emacs-lisp
   ;;---org-mode config-----------------------------------------------------------
   (use-package org
@@ -1307,3 +1323,4 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
 
 
 #+END_SRC
+end.
