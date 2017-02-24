@@ -778,89 +778,82 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
 
 
 * Elfeed
+
 #+BEGIN_SRC emacs-lisp
-  ;;(setq elfeed-db-directory "~/Dropbox/shared/elfeeddb")
+         ;;(setq elfeed-db-directory "~/Dropbox/shared/elfeeddb")
 
+    (use-package elfeed
+      :ensure t
+      :bind ("C-c e" . elfeed)
+      :bind (:map elfeed-search-mode-map
+                  ;; ("q" . bjm/elfeed-save-db-and-bury)
+                  ;; ("Q" . bjm/elfeed-save-db-and-bury)
+                  ("m" . elfeed-toggle-star)
+                  ("M" . elfeed-toggle-star)
+                  ("A" . bjm/elfeed-show-all)
+                  ;; ("q" . bjm/elfeed-save-db-and-bury)
+                  )
+      :config
+      (progn
+        (setq elfeed-feeds
+              '(("https://radio-t.com/podcast.rss" podcast)
+                ("http://devzen.ru/feed/" poscast)
+                ("https://golangshow.com/index.xml" podcast)
+                ("https://www.podcastinit.com/feed/mp3/" podcast)
+                ("https://talkpython.fm/episodes/rss" podcast)
+                ("http://feeds.feedburner.com/TheAmpHour" podcast)
+                ("http://pragmaticemacs.com/feed/" blog emacs)
+                ("http://nullprogram.com/feed/" blog emacs)
+                ("http://irreal.org/blog/?feed=rss2" blog emacs)
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA" youtube)
+                ))
+        (setf url-queue-timeout 30)
 
-  ;; (defun elfeed-mark-all-as-read ()
-  ;;   (interactive)
-  ;;   (mark-whole-buffer)
-  ;;   (elfeed-search-untag-all-unread))
+        ;; toggle betwen starred/unstarred
+        ;; code to add and remove a starred tag to elfeed article
+        ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
+        (defalias 'elfeed-toggle-star
+          (elfeed-expose #'elfeed-search-toggle-all 'starred))
 
+        ;; face for starred articles
+        (defface elfeed-search-starred-title-face
+          '((t :foreground "#f77"))
+          "Marks a starred Elfeed entry.")
 
-  ;; ;;functions to support syncing .elfeed between machines
-  ;; ;;makes sure elfeed reads index from disk before launching
-  ;; (defun bjm/elfeed-load-db-and-open ()
-  ;;   "Wrapper to load the elfeed db from disk before opening"
-  ;;   (interactive)
-  ;;   (elfeed-db-load)
-  ;;   (elfeed)
-  ;;   (elfeed-search-update--force))
+        (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
 
-  ;; ;;write to disk when quiting
-  ;; (defun bjm/elfeed-save-db-and-bury ()
-  ;;   "Wrapper to save the elfeed db to disk before burying buffer"
-  ;;   (interactive)
-  ;;   (elfeed-db-save)
-  ;;   (quit-window))
+        ;;shortcut functions
+        (defun bjm/elfeed-show-all ()
+          (interactive)
+          (bookmark-maybe-load-default-file)
+          (bookmark-jump "elfeed-all"))
 
+        (defun elfeed-mark-all-as-read ()
+          (interactive)
+          (mark-whole-buffer)
+          (elfeed-search-untag-all-unread))
 
-  ;; code to add and remove a starred tag to elfeed article
-  ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
+        (defun my/elfeed-week ()
+          (interactive)
+          (elfeed-search-set-filter "@1-week-ago +unread"))
 
-  ;; add a star
-  (defun bjm/elfeed-star ()
-    "Apply starred to all selected entries."
-    (interactive )
-    (let* ((entries (elfeed-search-selected))
-           (tag (intern "starred")))
+        ;;functions to support syncing .elfeed between machines
+        ;;makes sure elfeed reads index from disk before launching
+        ;; (defun bjm/elfeed-load-db-and-open ()
+        ;;   "Wrapper to load the elfeed db from disk before opening"
+        ;;   (interactive)
+        ;;   (elfeed-db-load)
+        ;;   (elfeed)
+        ;;   (elfeed-search-update--force))
 
-      (cl-loop for entry in entries do (elfeed-tag entry tag))
-      (mapc #'elfeed-search-update-entry entries)
-      (unless (use-region-p) (forward-line))))
-
-  ;; remove a start
-  (defun bjm/elfeed-unstar ()
-    "Remove starred tag from all selected entries."
-    (interactive )
-    (let* ((entries (elfeed-search-selected))
-           (tag (intern "starred")))
-
-      (cl-loop for entry in entries do (elfeed-untag entry tag))
-      (mapc #'elfeed-search-update-entry entries)
-      (unless (use-region-p) (forward-line))))
-
-  ;; face for starred articles
-  (defface elfeed-search-starred-title-face
-    '((t :foreground "#f77"))
-    "Marks a starred Elfeed entry.")
-
-  (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
-
-  (use-package elfeed
-    :ensure t
-    :bind ("C-c e" . elfeed)
-    :bind (:map elfeed-search-mode-map
-                ;; ("q" . bjm/elfeed-save-db-and-bury)
-                ;; ("Q" . bjm/elfeed-save-db-and-bury)
-                ("m" . elfeed-toggle-star)
-                ("M" . elfeed-toggle-star)
-                )
-    :config
-    (progn
-      (setq elfeed-feeds
-            '(("https://radio-t.com/podcast.rss")
-              ("http://devzen.ru/feed/")
-              ("https://golangshow.com/index.xml")
-              ("https://www.podcastinit.com/feed/mp3/")
-              ("https://talkpython.fm/episodes/rss")
-              ("http://feeds.feedburner.com/TheAmpHour")
-              ))
-      (setf url-queue-timeout 30)
-      (defalias 'elfeed-toggle-star
-        (elfeed-expose #'elfeed-search-toggle-all 'star))
+        ;;write to disk when quiting
+        ;; (defun bjm/elfeed-save-db-and-bury ()
+        ;;   "Wrapper to save the elfeed db to disk before burying buffer"
+        ;;   (interactive)
+        ;;   (elfeed-db-save)
+        ;;   (quit-window))
+        )
       )
-    )
 #+END_SRC
 
 
