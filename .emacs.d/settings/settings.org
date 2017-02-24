@@ -777,6 +777,93 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
 #+END_SRC
 
 
+* Elfeed
+#+BEGIN_SRC emacs-lisp
+  ;;(setq elfeed-db-directory "~/Dropbox/shared/elfeeddb")
+
+
+  ;; (defun elfeed-mark-all-as-read ()
+  ;;   (interactive)
+  ;;   (mark-whole-buffer)
+  ;;   (elfeed-search-untag-all-unread))
+
+
+  ;; ;;functions to support syncing .elfeed between machines
+  ;; ;;makes sure elfeed reads index from disk before launching
+  ;; (defun bjm/elfeed-load-db-and-open ()
+  ;;   "Wrapper to load the elfeed db from disk before opening"
+  ;;   (interactive)
+  ;;   (elfeed-db-load)
+  ;;   (elfeed)
+  ;;   (elfeed-search-update--force))
+
+  ;; ;;write to disk when quiting
+  ;; (defun bjm/elfeed-save-db-and-bury ()
+  ;;   "Wrapper to save the elfeed db to disk before burying buffer"
+  ;;   (interactive)
+  ;;   (elfeed-db-save)
+  ;;   (quit-window))
+
+
+  ;; code to add and remove a starred tag to elfeed article
+  ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
+
+  ;; add a star
+  (defun bjm/elfeed-star ()
+    "Apply starred to all selected entries."
+    (interactive )
+    (let* ((entries (elfeed-search-selected))
+           (tag (intern "starred")))
+
+      (cl-loop for entry in entries do (elfeed-tag entry tag))
+      (mapc #'elfeed-search-update-entry entries)
+      (unless (use-region-p) (forward-line))))
+
+  ;; remove a start
+  (defun bjm/elfeed-unstar ()
+    "Remove starred tag from all selected entries."
+    (interactive )
+    (let* ((entries (elfeed-search-selected))
+           (tag (intern "starred")))
+
+      (cl-loop for entry in entries do (elfeed-untag entry tag))
+      (mapc #'elfeed-search-update-entry entries)
+      (unless (use-region-p) (forward-line))))
+
+  ;; face for starred articles
+  (defface elfeed-search-starred-title-face
+    '((t :foreground "#f77"))
+    "Marks a starred Elfeed entry.")
+
+  (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
+
+  (use-package elfeed
+    :ensure t
+    :bind ("C-c e" . elfeed)
+    :bind (:map elfeed-search-mode-map
+                ;; ("q" . bjm/elfeed-save-db-and-bury)
+                ;; ("Q" . bjm/elfeed-save-db-and-bury)
+                ("m" . elfeed-toggle-star)
+                ("M" . elfeed-toggle-star)
+                )
+    :config
+    (progn
+      (setq elfeed-feeds
+            '(("https://radio-t.com/podcast.rss")
+              ("http://devzen.ru/feed/")
+              ("https://golangshow.com/index.xml")
+              ("https://www.podcastinit.com/feed/mp3/")
+              ("https://talkpython.fm/episodes/rss")
+              ("http://feeds.feedburner.com/TheAmpHour")
+              ))
+      (setf url-queue-timeout 30)
+      (defalias 'elfeed-toggle-star
+        (elfeed-expose #'elfeed-search-toggle-all 'star))
+      )
+    )
+#+END_SRC
+
+
 * Ido/smex
 #+BEGIN_SRC emacs-lisp
 (use-package ido
