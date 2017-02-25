@@ -780,80 +780,106 @@ _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
 * Elfeed
 
 #+BEGIN_SRC emacs-lisp
-         ;;(setq elfeed-db-directory "~/Dropbox/shared/elfeeddb")
+  (use-package elfeed
+    :ensure t
+    :bind ("C-c e" . elfeed)
+    :bind (:map elfeed-search-mode-map
+                ("q" . bjm/elfeed-save-db-and-bury)
+                ("Q" . bjm/elfeed-save-db-and-bury)
+                ("m" . elfeed-toggle-star)
+                ("M" . elfeed-toggle-star)
+                ("A" . bjm/elfeed-show-all))
+    :config
+    (progn
+      (setq elfeed-db-directory "~/org/shared/elfeeddb")
 
-    (use-package elfeed
-      :ensure t
-      :bind ("C-c e" . elfeed)
-      :bind (:map elfeed-search-mode-map
-                  ;; ("q" . bjm/elfeed-save-db-and-bury)
-                  ;; ("Q" . bjm/elfeed-save-db-and-bury)
-                  ("m" . elfeed-toggle-star)
-                  ("M" . elfeed-toggle-star)
-                  ("A" . bjm/elfeed-show-all)
-                  ;; ("q" . bjm/elfeed-save-db-and-bury)
-                  )
-      :config
-      (progn
-        (setq elfeed-feeds
-              '(("https://radio-t.com/podcast.rss" podcast)
-                ("http://devzen.ru/feed/" poscast)
-                ("https://golangshow.com/index.xml" podcast)
-                ("https://www.podcastinit.com/feed/mp3/" podcast)
-                ("https://talkpython.fm/episodes/rss" podcast)
-                ("http://feeds.feedburner.com/TheAmpHour" podcast)
-                ("http://pragmaticemacs.com/feed/" blog emacs)
-                ("http://nullprogram.com/feed/" blog emacs)
-                ("http://irreal.org/blog/?feed=rss2" blog emacs)
-                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA" youtube)
-                ))
-        (setf url-queue-timeout 30)
+      ;;functions to support syncing .elfeed between machines
+      ;;makes sure elfeed reads index from disk before launching
+      (defun bjm/elfeed-load-db-and-open ()
+        "Wrapper to load the elfeed db from disk before opening"
+        (interactive)
+        (elfeed-db-load)
+        (elfeed)
+        (elfeed-search-update--force))
 
-        ;; toggle betwen starred/unstarred
-        ;; code to add and remove a starred tag to elfeed article
-        ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
-        (defalias 'elfeed-toggle-star
-          (elfeed-expose #'elfeed-search-toggle-all 'starred))
+      ;;write to disk when quiting
+      (defun bjm/elfeed-save-db-and-bury ()
+        "Wrapper to save the elfeed db to disk before burying buffer"
+        (interactive)
+        (elfeed-db-save)
+        (quit-window))
 
-        ;; face for starred articles
-        (defface elfeed-search-starred-title-face
-          '((t :foreground "#f77"))
-          "Marks a starred Elfeed entry.")
+      ;; Mark all YouTube entries
+      (add-hook 'elfeed-new-entry-hook
+                (elfeed-make-tagger :feed-url "youtube\\.com"
+                                    :add '(youtube)))
 
-        (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
+      (setq elfeed-feeds
+            '(("https://radio-t.com/podcast.rss" podcast)
+              ("http://devzen.ru/feed/" podcast)
+              ("https://golangshow.com/index.xml" podcast)
+              ("https://www.podcastinit.com/feed/mp3/" podcast)
+              ("https://talkpython.fm/episodes/rss" podcast)
+              ("http://feeds.feedburner.com/TheAmpHour" podcast)
+              ("http://pragmaticemacs.com/feed/" blog emacs)
+              ("http://nullprogram.com/feed/" blog emacs)
+              ("http://irreal.org/blog/?feed=rss2" blog emacs)
+              ("http://ergoemacs.org/emacs/blog.xml" blog emacs)
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHugE6eRhqB9_AZQh4DDbIw")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCsgl7n_Zj35ODRZ_a_K5R-A")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCKxRARSpahF1Mt-2vbPug-g")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0YHNueF-3Nh3uQT0P4YQZw")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2GHqYE3fVJMncbrRd8AqcA")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCJQkHVpk3A8bgDmPlJlOJOA")
+              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2DjFE7Xf11URZqWBigcVOQ")
+              ))
+      (setf url-queue-timeout 30)
 
-        ;;shortcut functions
-        (defun bjm/elfeed-show-all ()
-          (interactive)
-          (bookmark-maybe-load-default-file)
-          (bookmark-jump "elfeed-all"))
+      ;; face for youtube articles
+      (defface elfeed-search-youtube-title-face
+        '((t :foreground "#329999"))
+        "Marks a youtube Elfeed entry.")
 
-        (defun elfeed-mark-all-as-read ()
-          (interactive)
-          (mark-whole-buffer)
-          (elfeed-search-untag-all-unread))
+      (push '(youtube elfeed-search-youtube-title-face) elfeed-search-face-alist)
 
-        (defun my/elfeed-week ()
-          (interactive)
-          (elfeed-search-set-filter "@1-week-ago +unread"))
+      ;; face for podcast articles
+      (defface elfeed-search-podcast-title-face
+        '((t :foreground "#5a81c3"))
+        "Marks a podcast Elfeed entry.")
 
-        ;;functions to support syncing .elfeed between machines
-        ;;makes sure elfeed reads index from disk before launching
-        ;; (defun bjm/elfeed-load-db-and-open ()
-        ;;   "Wrapper to load the elfeed db from disk before opening"
-        ;;   (interactive)
-        ;;   (elfeed-db-load)
-        ;;   (elfeed)
-        ;;   (elfeed-search-update--force))
+      (push '(podcast elfeed-search-podcast-title-face) elfeed-search-face-alist)
 
-        ;;write to disk when quiting
-        ;; (defun bjm/elfeed-save-db-and-bury ()
-        ;;   "Wrapper to save the elfeed db to disk before burying buffer"
-        ;;   (interactive)
-        ;;   (elfeed-db-save)
-        ;;   (quit-window))
-        )
+      ;; toggle betwen starred/unstarred
+      ;; code to add and remove a starred tag to elfeed article
+      ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
+      (defalias 'elfeed-toggle-star
+        (elfeed-expose #'elfeed-search-toggle-all 'starred))
+
+      ;; face for starred articles
+      (defface elfeed-search-starred-title-face
+        '((t :background "#514951"))
+        "Marks a starred Elfeed entry.")
+
+      (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
+
+      ;;shortcut functions
+      (defun bjm/elfeed-show-all ()
+        (interactive)
+        (bookmark-maybe-load-default-file)
+        (bookmark-jump "elfeed-all"))
+
+      (defun elfeed-mark-all-as-read ()
+        (interactive)
+        (mark-whole-buffer)
+        (elfeed-search-untag-all-unread))
+
+      (defun my/elfeed-week ()
+        (interactive)
+        (elfeed-search-set-filter "@1-week-ago +unread"))
       )
+    )
 #+END_SRC
 
 
