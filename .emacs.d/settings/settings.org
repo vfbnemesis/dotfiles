@@ -791,120 +791,122 @@ narrowed."
 * Elfeed
 
 #+BEGIN_SRC emacs-lisp
-  (use-package elfeed
-    :ensure t
-    :bind ("C-c e" . elfeed)
-    :bind (:map elfeed-search-mode-map
-                ("q" . bjm/elfeed-save-db-and-bury)
-                ("m" . elfeed-toggle-star)
-                ("v" . my/hydra-elfeed/body))
-    :config
-    (progn
-      (setq elfeed-db-directory "~/org/shared/elfeeddb")
+    (use-package elfeed
+      :ensure t
+      :bind ("C-c e" . elfeed)
+      :bind (:map elfeed-search-mode-map
+                  ("q" . bjm/elfeed-save-db-and-bury)
+                  ("m" . elfeed-toggle-star)
+                  ("v" . my/hydra-elfeed/body))
+      :config
+      (progn
+        (setq elfeed-db-directory "~/org/shared/elfeeddb")
 
-      ;;functions to support syncing .elfeed between machines
-      ;;makes sure elfeed reads index from disk before launching
-      (defun bjm/elfeed-load-db-and-open ()
-        "Wrapper to load the elfeed db from disk before opening"
-        (interactive)
-        (elfeed-db-load)
-        (elfeed)
-        (elfeed-search-update--force))
+        ;;functions to support syncing .elfeed between machines
+        ;;makes sure elfeed reads index from disk before launching
+        (defun bjm/elfeed-load-db-and-open ()
+          "Wrapper to load the elfeed db from disk before opening"
+          (interactive)
+          (elfeed-db-load)
+          (elfeed)
+          (elfeed-search-update--force))
 
-      ;;write to disk when quiting
-      (defun bjm/elfeed-save-db-and-bury ()
-        "Wrapper to save the elfeed db to disk before burying buffer"
-        (interactive)
-        (elfeed-db-save)
-        (quit-window))
+        ;;write to disk when quiting
+        (defun bjm/elfeed-save-db-and-bury ()
+          "Wrapper to save the elfeed db to disk before burying buffer"
+          (interactive)
+          (elfeed-db-save)
+          (quit-window))
 
-      ;; Mark all YouTube entries
-      (add-hook 'elfeed-new-entry-hook
-                (elfeed-make-tagger :feed-url "youtube\\.com"
-                                    :add '(youtube)))
+        ;; Mark all YouTube entries
+        (add-hook 'elfeed-new-entry-hook
+                  (elfeed-make-tagger :feed-url "youtube\\.com"
+                                      :add '(youtube)))
 
-      (setq elfeed-feeds
-            '(("https://radio-t.com/podcast.rss" podcast)
-              ("http://devzen.ru/feed/" podcast)
-              ("https://golangshow.com/index.xml" podcast)
-              ("https://www.podcastinit.com/feed/mp3/" podcast)
-              ("https://talkpython.fm/episodes/rss" podcast)
-              ("http://feeds.feedburner.com/TheAmpHour" podcast)
-              ("http://pragmaticemacs.com/feed/" blog emacs)
-              ("http://nullprogram.com/feed/" blog emacs)
-              ("http://irreal.org/blog/?feed=rss2" blog emacs)
-              ("http://ergoemacs.org/emacs/blog.xml" blog emacs)
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHugE6eRhqB9_AZQh4DDbIw")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCsgl7n_Zj35ODRZ_a_K5R-A")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCKxRARSpahF1Mt-2vbPug-g")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0YHNueF-3Nh3uQT0P4YQZw")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2GHqYE3fVJMncbrRd8AqcA")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UCJQkHVpk3A8bgDmPlJlOJOA")
-              ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2DjFE7Xf11URZqWBigcVOQ")
-              ))
-      (setf url-queue-timeout 30)
+        (setq elfeed-feeds
+              '(("https://radio-t.com/podcast.rss" podcast)
+                ("http://devzen.ru/feed/" podcast)
+                ("https://golangshow.com/index.xml" podcast)
+                ("https://www.podcastinit.com/feed/mp3/" podcast)
+                ("https://talkpython.fm/episodes/rss" podcast)
+                ("http://feeds.feedburner.com/TheAmpHour" podcast)
+                ("http://pragmaticemacs.com/feed/" blog emacs)
+                ("http://nullprogram.com/feed/" blog emacs)
+                ("http://irreal.org/blog/?feed=rss2" blog emacs)
+                ("http://ergoemacs.org/emacs/blog.xml" blog emacs)
+                ("http://sachachua.com/blog/feed/" blog emacs)
+                ("http://distrowatch.com/news/dw.xml" blog)
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHugE6eRhqB9_AZQh4DDbIw")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCsgl7n_Zj35ODRZ_a_K5R-A")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCKxRARSpahF1Mt-2vbPug-g")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0YHNueF-3Nh3uQT0P4YQZw")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2GHqYE3fVJMncbrRd8AqcA")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UCJQkHVpk3A8bgDmPlJlOJOA")
+                ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2DjFE7Xf11URZqWBigcVOQ")
+                ))
+        (setf url-queue-timeout 30)
 
-      ;; face for youtube articles
-      (defface elfeed-search-youtube-title-face
-        '((t :foreground "#329999"))
-        "Marks a youtube Elfeed entry.")
+        ;; face for youtube articles
+        (defface elfeed-search-youtube-title-face
+          '((t :foreground "#329999"))
+          "Marks a youtube Elfeed entry.")
 
-      (push '(youtube elfeed-search-youtube-title-face) elfeed-search-face-alist)
+        (push '(youtube elfeed-search-youtube-title-face) elfeed-search-face-alist)
 
-      ;; face for podcast articles
-      (defface elfeed-search-podcast-title-face
-        '((t :foreground "#5a81c3"))
-        "Marks a podcast Elfeed entry.")
+        ;; face for podcast articles
+        (defface elfeed-search-podcast-title-face
+          '((t :foreground "#5a81c3"))
+          "Marks a podcast Elfeed entry.")
 
-      (push '(podcast elfeed-search-podcast-title-face) elfeed-search-face-alist)
+        (push '(podcast elfeed-search-podcast-title-face) elfeed-search-face-alist)
 
-      ;; toggle betwen starred/unstarred
-      ;; code to add and remove a starred tag to elfeed article
-      ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
-      (defalias 'elfeed-toggle-star
-        (elfeed-expose #'elfeed-search-toggle-all 'starred))
+        ;; toggle betwen starred/unstarred
+        ;; code to add and remove a starred tag to elfeed article
+        ;; based on http://matt.hackinghistory.ca/2015/11/22/elfeed/
+        (defalias 'elfeed-toggle-star
+          (elfeed-expose #'elfeed-search-toggle-all 'starred))
 
-      ;; face for starred articles
-      (defface elfeed-search-starred-title-face
-        '((t :background "#514951"))
-        "Marks a starred Elfeed entry.")
+        ;; face for starred articles
+        (defface elfeed-search-starred-title-face
+          '((t :background "#514951"))
+          "Marks a starred Elfeed entry.")
 
-      (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
+        (push '(starred elfeed-search-starred-title-face) elfeed-search-face-alist)
 
-      ;;shortcut functions
-      (defun elfeed-mark-all-as-read ()
-        (interactive)
-        (mark-whole-buffer)
-        (elfeed-search-untag-all-unread))
+        ;;shortcut functions
+        (defun elfeed-mark-all-as-read ()
+          (interactive)
+          (mark-whole-buffer)
+          (elfeed-search-untag-all-unread))
 
-      (defhydra my/hydra-elfeed (:color blue)
-"
-^Elfeed^         ^sort^
-^^^^-----------------------------------------------
-_u_: unread      _p_: podcast
-_t_: today       _y_: youtube
-_w_: week        _e_: emacs
-_a_: All         _Q_: Quit Elfeed
-_s_: starred
-"
+        (defhydra my/hydra-elfeed (:color blue)
+  "
+  ^Elfeed^         ^sort^
+  ^^^^-----------------------------------------------
+  _u_: unread      _p_: podcast
+  _t_: today       _y_: youtube
+  _w_: week        _e_: emacs
+  _a_: All         _Q_: Quit Elfeed
+  _s_: starred
+  "
 
-        ("u" (elfeed-search-set-filter "@6-months-ago +unread") nil)
-        ("t" (elfeed-search-set-filter "@1-day-ago") nil)
-        ("w" (elfeed-search-set-filter "@1-week-ago +unread") nil)
-        ("a" (elfeed-search-set-filter "@6-months-ago") nil)
-        ("s" (elfeed-search-set-filter "@6-months-ago +starred") nil)
+          ("u" (elfeed-search-set-filter "@6-months-ago +unread") nil)
+          ("t" (elfeed-search-set-filter "@1-day-ago") nil)
+          ("w" (elfeed-search-set-filter "@1-week-ago +unread") nil)
+          ("a" (elfeed-search-set-filter "@6-months-ago") nil)
+          ("s" (elfeed-search-set-filter "@6-months-ago +starred") nil)
 
-        ("p" (elfeed-search-set-filter "@6-months-ago +podcast") nil)
-        ("y" (elfeed-search-set-filter "@6-months-ago +youtube") nil)
-        ("e" (elfeed-search-set-filter "@6-months-ago +emacs") nil)
+          ("p" (elfeed-search-set-filter "@6-months-ago +podcast") nil)
+          ("y" (elfeed-search-set-filter "@6-months-ago +youtube") nil)
+          ("e" (elfeed-search-set-filter "@6-months-ago +emacs") nil)
 
-        ("Q" bjm/elfeed-save-db-and-bury nil :color blue)
-        ("q" nil "quit" :color blue)
+          ("Q" bjm/elfeed-save-db-and-bury nil :color blue)
+          ("q" nil "quit" :color blue)
+          )
         )
       )
-    )
 #+END_SRC
 
 
