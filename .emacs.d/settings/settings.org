@@ -1445,8 +1445,8 @@ narrowed."
 
     (setq org-capture-templates
           '(;; journal entries
-            ("j" "Journal" entry (file+datetree "~/org/journal.org")
-             "**** %U %^{Title} %^g\n%?")
+            ("j" "Journal" entry (file "~/org/journal.org")
+             "* %^{Title} \n  :PROPERTIES:\n  :CREATED: %U\n  :END:\n%?")
             ;; task entries
             ("t" "Todo task" entry (file "~/org/gtd/refile.org")
              "* TODO %^{Task} %^g\nEntered on: %U\n%?")
