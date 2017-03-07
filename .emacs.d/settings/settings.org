@@ -836,6 +836,8 @@ narrowed."
                 ("http://ergoemacs.org/emacs/blog.xml" blog emacs)
                 ("http://sachachua.com/blog/feed/" blog emacs)
                 ("http://distrowatch.com/news/dw.xml" blog)
+                ("https://www.opennet.ru/opennews/opennews_all.rss" blog)
+                ("https://www.linux.org.ru/section-rss.jsp?section=1" blog)
                 ("http://embedded.fm/?format=rss" podcast electronix)
                 ("http://embedded.fm/blog/?format=rss" blog electronix)
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
