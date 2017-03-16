@@ -919,6 +919,7 @@ narrowed."
                 ("https://www.reddit.com/r/emacs/.rss" blog)
                 ("http://embedded.fm/?format=rss" podcast electronix)
                 ("http://embedded.fm/blog/?format=rss" blog electronix)
+                ("https://marsohod.org/component/ninjarsssyndicator/?feed_id=1&format=raw" blog electronix)
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHugE6eRhqB9_AZQh4DDbIw")
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCsgl7n_Zj35ODRZ_a_K5R-A")
