@@ -917,17 +917,30 @@ narrowed."
                 ("https://www.opennet.ru/opennews/opennews_all.rss" blog)
                 ("https://www.linux.org.ru/section-rss.jsp?section=1" blog)
                 ("https://www.reddit.com/r/emacs/.rss" blog)
+                ("https://habrahabr.ru/rss/flows/develop/all/" blog)
+                ;;; электроника
                 ("http://embedded.fm/?format=rss" podcast electronix)
                 ("http://embedded.fm/blog/?format=rss" blog electronix)
                 ("https://marsohod.org/component/ninjarsssyndicator/?feed_id=1&format=raw" blog electronix)
+                ("https://hackaday.com/blog/feed/" blog electronix)
+                ;;; youtube channels
+                ;; adafruit industries
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCpOlOeQjj7EsVnDh3zuCgsA")
+                ;; Jupiter Broadcasting
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCHugE6eRhqB9_AZQh4DDbIw")
+                ;; BuildFunThings
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCsgl7n_Zj35ODRZ_a_K5R-A")
+                ;; Mike Zamansky
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w")
+                ;; The Signal Path
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCKxRARSpahF1Mt-2vbPug-g")
+                ;; Computer Science Center
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0YHNueF-3Nh3uQT0P4YQZw")
+                ;; Go In 5 Minutes
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2GHqYE3fVJMncbrRd8AqcA")
+                ;; Robert Feranec
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UCJQkHVpk3A8bgDmPlJlOJOA")
+                ;; EEVblog
                 ("https://www.youtube.com/feeds/videos.xml?channel_id=UC2DjFE7Xf11URZqWBigcVOQ")
                 ))
         (setf url-queue-timeout 30)
