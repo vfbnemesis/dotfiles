@@ -85,6 +85,16 @@
 (column-number-mode t) ; показать номер столбца в mode-line
 (setq display-time-24hr-format t) ; 24-часовой временной формат в mode-line
 (display-time-mode t) ; показывать часы в mode-line
+
+;; --- Kill this buffer -------------------------------------------------------
+;; http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/
+(defun bjm/kill-this-buffer ()
+  "Kill the current buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(define-key my-mode-map (kbd "C-x k") 'bjm/kill-this-buffer)
+
 #+END_SRC
 
 
@@ -867,7 +877,6 @@ narrowed."
 
 
 * Elfeed
-
 #+BEGIN_SRC emacs-lisp
     (use-package elfeed
       :ensure t
@@ -1070,48 +1079,70 @@ narrowed."
 
 * ivy/counsel/swiper
 #+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t
-  ;; :diminish (ivy-mode)
-  ;; :bind (("C-x b" . ivy-switch-buffer))
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-display-style 'fancy))
-
-(use-package counsel
-  :ensure t
-  :bind (("M-y" . counsel-yank-pop))
-  :bind (:map ivy-minibuffer-map
-              ("M-y" . ivy-next-line))
-  )
-
-(use-package swiper
-  :ensure t
-  :bind (:map my-mode-map
-              ("C-s" . swiper)
-              ("C-c u" . swiper-all))
-  :config
-  (progn
+  (use-package ivy
+    :ensure t
+    ;; :diminish (ivy-mode)
+    ;; :bind (("C-x b" . ivy-switch-buffer))
+    :config
     (ivy-mode 1)
     (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy)
-    ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-    ;; (global-set-key (kbd "<f6>") 'ivy-resume)
-    ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-    ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-    ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-    ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-    ;; (global-set-key (kbd "<f1> l") 'counsel-load-library)
-    ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-    ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-    ;; (global-set-key (kbd "C-c g") 'counsel-git)
-    ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-    ;; (global-set-key (kbd "C-c k") 'counsel-ag)
-    ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-    ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-    ;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
+    (setq ivy-display-style 'fancy))
+
+  (use-package counsel
+    :ensure t
+    :bind (("M-y" . counsel-yank-pop))
+    :bind (:map ivy-minibuffer-map
+                ("M-y" . ivy-next-line))
+    )
+
+  (use-package swiper
+    :ensure t
+    :bind (:map my-mode-map
+                ("C-s" . swiper)
+                ("C-c u" . swiper-all))
+    :bind (:map ivy-minibuffer-map
+                ("M-j" . bjm/ivy-yank-whole-word))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+      ;; (global-set-key (kbd "<f6>") 'ivy-resume)
+      ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+      ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+      ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+      ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+      ;; (global-set-key (kbd "<f1> l") 'counsel-load-library)
+      ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+      ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+      ;; (global-set-key (kbd "C-c g") 'counsel-git)
+      ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+      ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+      ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      ;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+      ;; version of ivy-yank-word to yank from start of word
+      (defun bjm/ivy-yank-whole-word ()
+        "Pull next word from buffer into search string."
+        (interactive)
+        (let (amend)
+          (with-ivy-window
+            ;;move to last word boundary
+            (re-search-backward "\\b")
+            (let ((pt (point))
+                  (le (line-end-position)))
+              (forward-word 1)
+              (if (> (point) le)
+                  (goto-char pt)
+                (setq amend (buffer-substring-no-properties pt (point))))))
+          (when amend
+            (insert (replace-regexp-in-string "  +" " " amend)))))
+      ))
+
+  (use-package ivy-hydra
+    :ensure t)
 #+END_SRC
 
 
