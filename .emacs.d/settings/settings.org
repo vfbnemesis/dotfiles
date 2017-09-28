@@ -695,6 +695,14 @@ narrowed."
       ))
 #+END_SRC
 
+** neotree
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t
+    :bind (:map my-mode-map
+                ("<f8>" . neotree-toggle))
+    )
+#+END_SRC
 ** recetf
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
@@ -1275,11 +1283,11 @@ narrowed."
 ;;   )
 
 ;; (use-package fill-column-indicator
-;;   :ensure t
-;;   :config
-;;   (define-globalized-minor-mode
-;;     global-fci-mode fci-mode (lambda () (fci-mode 1)))
-;;   (global-fci-mode t))
+;;    :ensure t
+;;    :config
+;;    (define-globalized-minor-mode
+;; global-fci-mode fci-mode (lambda () (fci-mode 1)))
+;;    (global-fci-mode t))
 #+END_SRC
 
 
@@ -1461,31 +1469,36 @@ narrowed."
 
 * my config
 #+BEGIN_SRC emacs-lisp
-(use-package yasnippet
-  :ensure t
-  :config
-  ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
-  (yas-global-mode 1))
+  (use-package yasnippet
+    :ensure t
+    :config
+    ;;(yas/load-directory "~/.emacs.d/yasnippet/snippets")
+    (yas-global-mode 1))
 
-(use-package auto-complete
-  :ensure t
-  :config
-  (progn
-  ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
-    (ac-config-default)
-    (global-auto-complete-mode t)
-    ))
+  (use-package auto-complete
+    :ensure t
+    :config
+    (progn
+      ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
+      (ac-config-default)
+      (global-auto-complete-mode t)
+      ))
 
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode)
-  )
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode)
+    )
 
-(use-package projectile
-  :ensure t
-  )
-;; ----------------------------------------------------------------------------
+  (use-package projectile
+    :ensure t
+    )
+
+  (use-package pomidor
+    :ensure t
+    :bind (("<f9>" . pomidor)))
+
+  ;; ----------------------------------------------------------------------------
 
 #+END_SRC
 
