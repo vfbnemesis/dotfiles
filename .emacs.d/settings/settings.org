@@ -494,6 +494,14 @@ narrowed."
   (use-package zenburn-theme
     :ensure t
     )
+
+  (use-package monokai-theme
+    :ensure t
+    )
+
+  (use-package solarized-theme
+    :ensure t
+    )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -503,6 +511,10 @@ narrowed."
   (add-to-list 'custom-theme-load-path "~/.emacs.d/plugins")
 
   (setq my-color-themes (list 'zenburn
+                              'monokai
+                              ;; 'solarized
+                              'solarized-dark
+                              'solarized-light
                               'deeper-blue
                               'wheatgrass
                               'dark-laptop))
@@ -528,7 +540,7 @@ narrowed."
   (setq theme-current my-color-themes)
   (my-theme-set-default)
 
-  (global-set-key (kbd "<f7>") 'my-theme-cycle)
+  ;; (global-set-key (kbd "<f7>") 'my-theme-cycle)
 #+END_SRC
 
 
@@ -703,6 +715,7 @@ narrowed."
                 ("<f8>" . neotree-toggle))
     )
 #+END_SRC
+
 ** recetf
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
@@ -758,6 +771,32 @@ narrowed."
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
+  (defhydra my/select-themes (:color blue
+                                     :hint nil)
+    "
+    Themes:
+    ^^^^-----------------------------------------------------------------------
+    _z_: zenburn             _e_: deeper-blue
+    _m_: monokai             _w_: wheatgrass
+    _d_: solarize-dark       _r_: dark-laptop
+    _s_: solarized-light
+      "
+
+    ("z" (load-theme 'zenburn t))
+    ("m" (load-theme 'monokai t))
+    ("d" (load-theme 'solarized-dark t))
+    ("s" (load-theme 'solarized-light t))
+
+    ("e" (load-theme 'deeper-blue t))
+    ("w" (load-theme 'wheatgrass t))
+    ("r" (load-theme 'dark-laptop t))
+
+    ("q" nil "quit" :color blue))
+
+  (global-set-key (kbd "<f7>") 'my/select-themes/body)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (defhydra my/window-movement (:color blue
                                        :hint nil)
     "
@@ -799,6 +838,7 @@ narrowed."
   _c_: color identifier       _t_: truncate-lines     %`truncate-lines
   _b_: rainbow identifier     _w_: whitespace-mode    %`whitespace-mode
   _s_: subword-mode           _v_: visual-line-mode   %`visual-line-mode
+  _d_: highlight todo
   "
     ("a" abbrev-mode nil)
     ("w" whitespace-mode nil)
@@ -812,6 +852,7 @@ narrowed."
     ("c" color-identifiers-mode)
     ("b" rainbow-identifiers-mode)
     ("s" subword-mode)
+    ("d" hl-todo-mode)
 
     ("q" nil "quit"))
 #+END_SRC
@@ -1258,6 +1299,18 @@ narrowed."
     )
 #+END_SRC
 
+** Highlight TODO
+   [[https://github.com/tarsius/hl-todo][src]]
+#+BEGIN_SRC emacs-lisp
+  (use-package hl-todo
+    :ensure t
+    :bind (:map hl-todo-mode-map
+                ("C-c p" . hl-todo-previous)
+                ("C-c n" . hl-todo-next)
+                ("C-c o" . hl-todo-occur))
+    )
+#+END_SRC
+
 ** other
 #+BEGIN_SRC emacs-lisp
 ;; --- hide/show C block ------------------------------------------------------
@@ -1632,8 +1685,13 @@ narrowed."
     ;; This adds very basic support for Pomodoro technique in Emacs org-mode
     (use-package org-pomodoro
       :ensure t)
+#+END_SRC
 
-
-
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    )
 #+END_SRC
 end.
